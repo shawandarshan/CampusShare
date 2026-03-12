@@ -46,6 +46,22 @@ export async function POST(req: Request) {
 
         const body = await req.json();
 
+        // ✅ Duplicate check: prevent same user requesting same item twice
+        const { data: existing } = await supabase
+            .from("requests")
+            .select("id")
+            .eq("item_id", body.itemId || "")
+            .eq("requester_email", session.user.email!)
+            .eq("status", "pending")
+            .maybeSingle();
+
+        if (existing) {
+            return NextResponse.json(
+                { error: "You already have a pending request for this item." },
+                { status: 409 }
+            );
+        }
+
         const newRequest = {
             item_id: body.itemId || "",
             item_name: body.itemName || "",

@@ -50,13 +50,37 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
             const ownerName = item.ownerId?.name || "the owner";
             const mode = item.mode || "borrow";
 
+            // Fetch the current user's saved profile to attach to the request
+            let requesterProfile = { college: "", department: "", year: "", contact: "" };
+            try {
+                const profileRes = await fetch("/api/user/profile");
+                if (profileRes.ok) {
+                    const profileData = await profileRes.json();
+                    requesterProfile = {
+                        college: profileData.user?.college || "Malnad College of Engineering",
+                        department: profileData.user?.department || "",
+                        year: profileData.user?.year || "",
+                        contact: profileData.user?.contact || "",
+                    };
+                }
+            } catch { }
+
             const res = await fetch("/api/requests", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     itemId: item._id || item.id,
+                    itemName: item.name || "",
                     ownerId: item.ownerId?._id || item.ownerId?.email || "unknown",
+                    ownerEmail: item.ownerId?._id?.includes("@")
+                        ? item.ownerId._id
+                        : item.ownerId?.email || "",
                     message: `Hi ${ownerName}, I would like to ${mode.toLowerCase()} this listing. Is it still available?`,
+                    // Profile data auto-attached from saved profile
+                    requesterCollege: requesterProfile.college,
+                    requesterDept: requesterProfile.department,
+                    requesterYear: requesterProfile.year,
+                    requesterPhone: requesterProfile.contact,
                 }),
             });
 

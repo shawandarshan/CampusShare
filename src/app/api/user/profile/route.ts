@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
-// Mock database so it retains changes during the session
-let mockProfiles: Record<string, any> = {};
+import { supabase } from "@/lib/supabase";
 
 export async function GET(req: Request) {
     try {
@@ -14,24 +12,31 @@ export async function GET(req: Request) {
 
         const email = session.user.email;
 
-        // Create default empty profile if it doesn't exist
-        if (!mockProfiles[email]) {
-            mockProfiles[email] = {
-                name: session.user.name || "Student",
-                email: session.user.email,
-                profileImage: session.user.image,
-                college: "",
-                department: "",
-                year: "",
-                contact: "",
-                rating: 5,
-                totalRatings: 1
-            };
+        const { data, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("email", email)
+            .maybeSingle();
+
+        if (error) {
+            console.error("Supabase GET profile error:", error);
+            return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
         }
 
-        return NextResponse.json({ user: mockProfiles[email], items: [] }, { status: 200 });
+        // Return existing or default profile
+        const profile = data || {
+            name: session.user.name || "Student",
+            email,
+            profile_image: session.user.image || "",
+            college: "Malnad College of Engineering",
+            department: "",
+            year: "",
+            contact: "",
+        };
+
+        return NextResponse.json({ user: profile, items: [] }, { status: 200 });
     } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.error("GET profile exception:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
@@ -46,15 +51,32 @@ export async function PATCH(req: Request) {
         const email = session.user.email;
         const body = await req.json();
 
-        if (mockProfiles[email]) {
-            mockProfiles[email] = { ...mockProfiles[email], ...body };
-        } else {
-            mockProfiles[email] = { email, ...body };
+        const profileData = {
+            email,
+            name: body.name || session.user.name || "Student",
+            profile_image: body.profileImage || session.user.image || "",
+            college: body.college || "",
+            department: body.department || "",
+            year: body.year || "",
+            contact: body.contact || "",
+            updated_at: new Date().toISOString(),
+        };
+
+        // Upsert: insert if not exists, update if exists
+        const { data, error } = await supabase
+            .from("profiles")
+            .upsert(profileData, { onConflict: "email" })
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Supabase PATCH profile error:", error);
+            return NextResponse.json({ error: "Failed to update profile", details: error.message }, { status: 500 });
         }
 
-        return NextResponse.json({ success: true, user: mockProfiles[email] });
+        return NextResponse.json({ success: true, user: data }, { status: 200 });
     } catch (error) {
-        console.error("Error updating user profile:", error);
+        console.error("PATCH profile exception:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

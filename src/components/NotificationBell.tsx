@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { Bell, X, Phone, GraduationCap, Building, BookOpen, Clock } from "lucide-react";
+import { Bell, X, Phone, GraduationCap, Building, BookOpen, Clock, CheckCircle2, XCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -46,6 +46,22 @@ export default function NotificationBell() {
             console.error("Failed to load notifications:", err);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleStatus = async (requestId: string, status: "approved" | "rejected") => {
+        try {
+            await fetch(`/api/requests/${requestId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status }),
+            });
+            // Update local state immediately
+            setRequests((prev) =>
+                prev.map((r) => (r.id === requestId ? { ...r, status, is_read: true } : r))
+            );
+        } catch (err) {
+            console.error("Failed to update request status:", err);
         }
     };
 
@@ -195,6 +211,24 @@ export default function NotificationBell() {
                                         <p className="text-xs text-neutral-500 italic bg-neutral-50 rounded-lg px-3 py-2 border border-neutral-100 mb-2 line-clamp-2">
                                             "{req.message}"
                                         </p>
+                                    )}
+
+                                    {/* Approve / Reject buttons for pending requests */}
+                                    {req.status === "pending" && (
+                                        <div className="flex gap-2 mt-2 mb-2">
+                                            <button
+                                                onClick={() => handleStatus(req.id!, "approved")}
+                                                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all"
+                                            >
+                                                <CheckCircle2 className="h-3.5 w-3.5" /> Approve
+                                            </button>
+                                            <button
+                                                onClick={() => handleStatus(req.id!, "rejected")}
+                                                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-all"
+                                            >
+                                                <XCircle className="h-3.5 w-3.5" /> Reject
+                                            </button>
+                                        </div>
                                     )}
 
                                     {/* Footer: timestamp */}

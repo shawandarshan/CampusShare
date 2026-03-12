@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
 
 export async function POST(req: Request) {
     try {

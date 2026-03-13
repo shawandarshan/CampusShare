@@ -80,15 +80,15 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { name: "Books", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-50" },
-              { name: "Electronics", icon: Cpu, color: "text-amber-500", bg: "bg-amber-50" },
-              { name: "Lab Materials", icon: FlaskConical, color: "text-rose-500", bg: "bg-rose-50" },
-              { name: "Hardware Tools", icon: Wrench, color: "text-emerald-500", bg: "bg-emerald-50" },
+              { name: "Books", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-50", hover: "hover:border-blue-200" },
+              { name: "Electronics", icon: Cpu, color: "text-amber-500", bg: "bg-amber-50", hover: "hover:border-amber-200" },
+              { name: "Lab Materials", icon: FlaskConical, color: "text-rose-500", bg: "bg-rose-50", hover: "hover:border-rose-200" },
+              { name: "Hardware Tools", icon: Wrench, color: "text-emerald-500", bg: "bg-emerald-50", hover: "hover:border-emerald-200" },
             ].map((cat) => (
               <Link href={`/browse?category=${cat.name}`} key={cat.name}>
-                <div className={`p-6 rounded-2xl ${cat.bg} border border-transparent hover:border-${cat.color.split("-")[1]}-200 cursor-pointer transition-all duration-300 hover:shadow-md group flex flex-col items-center dark:bg-muted dark:hover:bg-muted/80`}>
+                <div className={`p-6 rounded-2xl ${cat.bg} ${cat.hover} border border-transparent cursor-pointer transition-all duration-300 hover:shadow-md group flex flex-col items-center`}>
                   <cat.icon className={`w-10 h-10 ${cat.color} mb-3 group-hover:scale-110 transition-transform`} />
-                  <span className="font-medium text-foreground">{cat.name}</span>
+                  <span className="font-semibold text-neutral-800 text-sm mt-1">{cat.name}</span>
                 </div>
               </Link>
             ))}

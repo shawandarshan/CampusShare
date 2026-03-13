@@ -118,8 +118,8 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
         return (
             <div className="container mx-auto px-4 py-16 text-center">
                 <Package className="mx-auto h-16 w-16 text-neutral-300 mb-4" />
-                <h1 className="text-2xl font-bold text-foreground">Item not found</h1>
-                <p className="mt-2 text-muted-foreground">The resource you are looking for might have been removed.</p>
+                <h1 className="text-2xl font-bold text-neutral-900">Item not found</h1>
+                <p className="mt-2 text-neutral-500">The resource you are looking for might have been removed.</p>
                 <Link href="/browse">
                     <Button className="mt-6 bg-emerald-600 hover:bg-emerald-700">Back to Browse</Button>
                 </Link>
@@ -134,7 +134,7 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
 
     return (
         <div className="container mx-auto max-w-5xl px-4 py-8">
-            <Link href="/browse" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-emerald-600 mb-6 transition-colors">
+            <Link href="/browse" className="inline-flex items-center text-sm font-medium text-neutral-500 hover:text-emerald-600 mb-6 transition-colors">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Resources
             </Link>
@@ -189,9 +189,9 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                 </Badge>
                             )}
                         </div>
-                        <h1 className="text-3xl font-bold text-foreground mb-2">{item.name}</h1>
+                        <h1 className="text-3xl font-bold text-neutral-900 mb-2">{item.name}</h1>
                         {(item.mode || item.availability) && (
-                            <p className="text-muted-foreground capitalize">
+                            <p className="text-neutral-500 capitalize">
                                 {item.mode && `${item.mode}`}
                                 {item.availability && ` • Available for ${item.availability}`}
                             </p>
@@ -201,8 +201,8 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                     {/* Description */}
                     {item.description && (
                         <div className="bg-neutral-50 rounded-xl p-4 border border-neutral-100">
-                            <h3 className="text-base font-semibold text-foreground mb-2">Description</h3>
-                            <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed text-sm">
+                            <h3 className="text-base font-semibold text-neutral-900 mb-2">Description</h3>
+                            <p className="text-neutral-600 whitespace-pre-wrap leading-relaxed text-sm">
                                 {item.description}
                             </p>
                         </div>
@@ -221,9 +221,9 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2">
                                         <User className="h-4 w-4 text-neutral-400" />
-                                        <p className="font-semibold text-foreground">{ownerName}</p>
+                                        <p className="font-semibold text-neutral-900">{ownerName}</p>
                                     </div>
-                                    <p className="text-sm text-muted-foreground mt-0.5">{ownerCollege}</p>
+                                    <p className="text-sm text-neutral-500 mt-0.5">{ownerCollege}</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -246,7 +246,7 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                             )}
                         </Button>
 
-                        <Button variant="outline" className="w-full h-10 text-muted-foreground hover:text-foreground">
+                        <Button variant="outline" className="w-full h-10 text-neutral-600 hover:text-neutral-900">
                             <Share2 className="mr-2 h-4 w-4" /> Share This Resource
                         </Button>
                     </div>

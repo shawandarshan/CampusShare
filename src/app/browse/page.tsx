@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ interface Item {
     createdAt: string;
 }
 
-export default function BrowsePage() {
+function BrowseContent() {
     const searchParams = useSearchParams();
     const initialCategory = searchParams.get("category") || "All";
 
@@ -197,3 +197,16 @@ export default function BrowsePage() {
         </div>
     );
 }
+
+export default function BrowsePage() {
+    return (
+        <Suspense fallback={
+            <div className="flex h-[60vh] items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
+            </div>
+        }>
+            <BrowseContent />
+        </Suspense>
+    );
+}
+

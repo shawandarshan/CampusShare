@@ -7,7 +7,11 @@ import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import Chatbot from "@/components/Chatbot";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+});
 
 export const metadata: Metadata = {
   title: "CampusShare - Resource Sharing for Students",

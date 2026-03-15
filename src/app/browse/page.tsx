@@ -240,20 +240,26 @@ function BrowseContent() {
                                                             {item.ownerId?.name?.charAt(0) || "?"}
                                                         </AvatarFallback>
                                                     </Avatar>
-                                                    <div className="flex flex-col">
-                                                        <span className="text-xs font-semibold text-neutral-800 truncate max-w-[100px]">
-                                                            {item.ownerId?.name || "Unknown"}
-                                                        </span>
-                                                        <span className="text-[10px] text-neutral-500 truncate max-w-[100px]">
-                                                            {item.ownerId?.college || "Meenakshi College of Engineering"}
-                                                        </span>
-                                                    </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs font-semibold text-neutral-800 truncate max-w-[100px]">
+                                                        {item.ownerId?.name || "Unknown"}
+                                                    </span>
+                                                    <span className="text-[10px] text-neutral-500 truncate max-w-[100px]">
+                                                        {item.ownerId?.college || "Meenakshi College of Engineering"}
+                                                    </span>
                                                 </div>
-                                                
+                                            </div>
+                                            
+                                            {item.mode === "Sell" && (item as any).price ? (
+                                                <div className="text-emerald-700 font-bold text-sm">
+                                                    ₹{(item as any).price}
+                                                </div>
+                                            ) : (
                                                 <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium h-8 px-3 rounded-lg text-xs">
                                                     View Details
                                                 </Button>
-                                            </div>
+                                            )}
+                                        </div>
                                         </div>
                                     </div>
                                 </Link>

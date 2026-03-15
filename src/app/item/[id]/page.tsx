@@ -242,16 +242,22 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                     <div className="space-y-3 pt-2 border-t border-neutral-100">
                         <Button
                             onClick={handleRequest}
-                            className="w-full h-12 text-base font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5"
+                            className={`w-full h-12 text-base font-semibold shadow-lg transition-all hover:-translate-y-0.5 ${
+                                item.mode === "Sell" 
+                                ? "bg-emerald-700 hover:bg-emerald-800 shadow-emerald-900/10" 
+                                : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20"
+                            }`}
                             disabled={isRequesting}
                         >
                             {isRequesting ? (
                                 <>
                                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                    Sending Request...
+                                    Processing...
                                 </>
                             ) : (
-                                `Request to ${item.mode || "Borrow"}`
+                                item.mode === "Sell" 
+                                ? `Buy Resource for ₹${item.price || "0"}` 
+                                : `Request to ${item.mode || "Borrow"}`
                             )}
                         </Button>
 

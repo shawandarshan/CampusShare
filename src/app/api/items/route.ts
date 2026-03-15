@@ -56,7 +56,7 @@ export async function POST(req: Request) {
             mode: body.mode || "",
             images: body.images || [],
             imageUrl: body.images?.[0] || "",
-            ownerId: body.ownerId || null,
+            ownerId: session.user.id || session.user.email, // Force ownerId from the authenticated session
             available: true,
             createdAt: new Date().toISOString(),
         };

@@ -2,22 +2,39 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Items collection:
-    // - Anyone can read (needed for browse/item detail pages)
-    // - Only authenticated @mce.edu.in users can create
-    // - Only the owner of an item can update or delete it
-    match /items/{itemId} {
-      allow read: if true;
-
-      allow create: if request.auth != null
-                    && request.auth.token.email != null
-                    && request.auth.token.email.matches('.*@mce\\.edu\\.in');
-
-      allow update, delete: if request.auth != null
-                             && resource.data.ownerId == request.auth.uid;
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
     }
 
-    // Deny all access to any other collection
+    function isMceStudent() {
+      return isAuthenticated() && 
+             request.auth.token.email.matches('.*@mce\\.edu\\.in');
+    }
+
+    function isOwner(data) {
+      return isAuthenticated() && data.ownerId == request.auth.uid;
+    }
+
+    // Items collection:
+    match /items/{itemId} {
+      // Anyone can read (browsing is allowed)
+      allow read: if true;
+
+      // Only verified @mce.edu.in students can create items
+      // They MUST set themselves as the owner
+      allow create: if isMceStudent() && 
+                      request.resource.data.ownerId == request.auth.uid;
+
+      // Only the owner can update or delete their items
+      // They cannot change the ownerId during update
+      allow update: if isOwner(resource.data) && 
+                      request.resource.data.ownerId == resource.data.ownerId;
+                      
+      allow delete: if isOwner(resource.data);
+    }
+
+    // Default deny
     match /{document=**} {
       allow read, write: if false;
     }

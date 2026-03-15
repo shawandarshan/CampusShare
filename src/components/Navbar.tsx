@@ -14,7 +14,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, Plus, Menu, X } from "lucide-react";
+import { Search, Plus, Menu, X, Home } from "lucide-react";
 import NotificationBell from "@/components/NotificationBell";
 
 export default function Navbar() {
@@ -34,8 +34,14 @@ export default function Navbar() {
                 {/* Desktop Nav */}
                 <div className="hidden sm:flex items-center gap-4">
                     <div className="flex items-center gap-2">
+                        <Link href="/">
+                            <Button variant="ghost" size="icon" title="Home" className="rounded-2xl h-10 w-10 text-neutral-900 border border-neutral-200 hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 bg-white shadow-sm flex items-center justify-center transition-all duration-300">
+                                <Home className="h-5 w-5" strokeWidth={2.5} />
+                            </Button>
+                        </Link>
+
                         <Link href="/browse">
-                            <Button variant="ghost" size="icon" className="rounded-2xl h-10 w-10 text-neutral-900 border border-neutral-200 hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 bg-white shadow-sm flex items-center justify-center transition-all duration-300">
+                            <Button variant="ghost" size="icon" title="Search Items" className="rounded-2xl h-10 w-10 text-neutral-900 border border-neutral-200 hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 bg-white shadow-sm flex items-center justify-center transition-all duration-300">
                                 <Search className="h-5 w-5" strokeWidth={2.5} />
                             </Button>
                         </Link>
@@ -91,8 +97,13 @@ export default function Navbar() {
 
                 {/* Mobile: icons + hamburger */}
                 <div className="flex sm:hidden items-center gap-2">
+                    <Link href="/">
+                        <Button variant="ghost" size="icon" className="rounded-2xl h-9 w-9 text-neutral-700 border border-neutral-200 bg-white">
+                            <Home className="h-4 w-4" />
+                        </Button>
+                    </Link>
                     <Link href="/browse">
-                        <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 text-neutral-700 border border-neutral-200 bg-white">
+                        <Button variant="ghost" size="icon" className="rounded-2xl h-9 w-9 text-neutral-700 border border-neutral-200 bg-white">
                             <Search className="h-4 w-4" />
                         </Button>
                     </Link>
@@ -102,7 +113,7 @@ export default function Navbar() {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="rounded-full h-9 w-9 text-neutral-700 border border-neutral-200 bg-white"
+                        className="rounded-2xl h-9 w-9 text-neutral-700 border border-neutral-200 bg-white"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}

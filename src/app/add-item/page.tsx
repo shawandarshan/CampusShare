@@ -190,9 +190,10 @@ export default function AddItemPage() {
                                         <SelectValue placeholder="Select Condition" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="Borrow">Borrow</SelectItem>
-                                        <SelectItem value="Sell">Sell</SelectItem>
-                                        <SelectItem value="Donate">Donate</SelectItem>
+                                        <SelectItem value="New">New</SelectItem>
+                                        <SelectItem value="Good">Good</SelectItem>
+                                        <SelectItem value="Fair">Fair</SelectItem>
+                                        <SelectItem value="Poor">Poor</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

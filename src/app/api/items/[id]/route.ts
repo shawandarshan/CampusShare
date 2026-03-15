@@ -132,8 +132,25 @@ export async function PATCH(
         }
 
         const body = await req.json();
-        await updateDoc(docRef, body);
-        return NextResponse.json({ message: "Item updated successfully" }, { status: 200 });
+        const allowedFields = ["name", "category", "condition", "description", "availability", "mode", "price", "images"];
+        const updateData: any = {};
+        
+        allowedFields.forEach(field => {
+            if (body[field] !== undefined) {
+                updateData[field] = body[field];
+            }
+        });
+
+        // Sync imageUrl with the first image in the array if images are updated
+        if (updateData.images && updateData.images.length > 0) {
+            updateData.imageUrl = updateData.images[0];
+        } else if (updateData.images && updateData.images.length === 0) {
+            updateData.imageUrl = "";
+        }
+
+        console.log(`Updating item ${id} with:`, updateData);
+        await updateDoc(docRef, updateData);
+        return NextResponse.json({ message: "Item updated successfully", updatedFields: Object.keys(updateData) }, { status: 200 });
     } catch (error: any) {
         console.error("PATCH item error:", error);
         return NextResponse.json({ error: "Failed to update item" }, { status: 500 });

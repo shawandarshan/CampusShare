@@ -303,7 +303,8 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                 >
                                     {isRequesting ? <Loader2 className="h-5 w-5 animate-spin" /> : "Delete Listing"}
                                 </Button>
-                            </d                        ) : (
+                            </div>
+                        ) : (
                             <div className="flex flex-col sm:flex-row gap-4 items-stretch">
                                 {item.mode === "Sell" && (
                                     <div className="flex-1 bg-emerald-50 border-2 border-emerald-100 rounded-2xl px-6 flex flex-col justify-center items-center sm:items-start group hover:bg-emerald-100/50 transition-colors py-3 sm:py-0">

@@ -42,8 +42,8 @@
 
 /* Global Cursor & Performance Base */
 html, body {
-  /* Cute Fountain Pen Cursor - Softer colors and rounded tip */
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m12 19 7-7 3 3-7 7-3-3z'/><path d='m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'/><path d='m2 2 5 5'/><path d='m9.5 9.5 4 4'/></svg>") 0 24, auto;
+  /* Cute Fountain Pen Cursor - URL-encoded for cross-browser reliability. Hotspot at 2,2 (pen tip) */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 19 7-7 3 3-7 7-3-3z'/%3E%3Cpath d='m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'/%3E%3Cpath d='m2 2 5 5'/%3E%3Cpath d='m9.5 9.5 4 4'/%3E%3C/svg%3E") 2 2, auto;
   background: var(--background);
   color: var(--foreground);
   @apply antialiased;
@@ -58,9 +58,9 @@ body {
   background-attachment: fixed;
 }
 
-/* Cute Pointing Pen for links/buttons */
+/* Cute Pointing Pen for links/buttons - Hotspot at 2,2 */
 a, button, [role="button"] {
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m12 19 7-7 3 3-7 7-3-3z'/><path d='m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'/><path d='m2 2 5 5'/><path d='m9.5 9.5 4 4'/><circle cx='18' cy='6' r='3' fill='%2310b981' fill-opacity='0.2' stroke='none'/></svg>") 0 24, pointer;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 19 7-7 3 3-7 7-3-3z'/%3E%3Cpath d='m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'/%3E%3Cpath d='m2 2 5 5'/%3E%3Cpath d='m9.5 9.5 4 4'/%3E%3Ccircle cx='18' cy='6' r='3' fill='%2310b981' fill-opacity='0.2' stroke='none'/%3E%3C/svg%3E") 2 2, pointer;
 }
 
 @layer utilities {

@@ -17,41 +17,14 @@ export const authOptions: AuthOptions = {
                 }
 
                 if (!credentials.email.endsWith("@mce.edu.in")) {
-                    throw new Error("Only authorised users of the MCE Domain can process.");
+                    throw new Error("Only @mce.edu.in accounts are allowed.");
                 }
 
-                // Return the Firebase user directly without saving to MongoDB.
-                // You can sync this with Supabase/Firestore in the future.
                 return {
-                    id: credentials.email, // using email as ID temporarily
+                    id: credentials.email,
                     name: credentials.name || "Student",
                     email: credentials.email,
                     image: credentials.image || "",
-                };
-            },
-        }),
-        CredentialsProvider({
-            id: "credentials",
-            name: "Credentials",
-            credentials: {
-                email: { label: "Email", type: "email", placeholder: "student@college.edu" },
-                password: { label: "Password", type: "password" },
-            },
-            async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Missing email or password");
-                }
-
-                if (!credentials.email.endsWith("@mce.edu.in")) {
-                    throw new Error("Only authorised users of the MCE Domain can process.");
-                }
-
-                // Temporary dummy auth block to bypass MongoDB requirement
-                // You will replace this with Firebase Auth or Supabase Auth.
-                return {
-                    id: "temp-user-id",
-                    name: "Demo Student",
-                    email: credentials.email,
                 };
             },
         }),

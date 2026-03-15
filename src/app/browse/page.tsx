@@ -145,66 +145,113 @@ function BrowseContent() {
                             <p className="text-neutral-500 mt-2">Try adjusting your search or filters.</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                        /* Mobile: 2-col compact cards | sm+: 2-col | lg: 3-col tall cards */
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
                             {items.map((item) => (
-                                <Card key={item._id} className="group overflow-hidden flex flex-col hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 border-neutral-200">
-                                    <div className="aspect-square bg-neutral-100 relative overflow-hidden">
-                                        {item.images && item.images.length > 0 ? (
-                                            <img
-                                                src={item.images[0]}
-                                                alt={item.name}
-                                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-                                            />
-                                        ) : (
-                                            <div className="flex items-center justify-center w-full h-full text-neutral-300 flex-col gap-2">
-                                                <span className="text-4xl">📦</span>
-                                                <span className="text-sm">No Image</span>
+                                <Link key={item._id} href={`/item/${item._id || item.id}`}>
+                                    {/* ── Mobile card: compact vertical with small image ── */}
+                                    <div className="sm:hidden group rounded-2xl overflow-hidden border border-neutral-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98] h-full flex flex-col">
+                                        {/* Image — fixed small height */}
+                                        <div className="relative w-full h-28 bg-neutral-100 overflow-hidden">
+                                            {item.images && item.images.length > 0 ? (
+                                                <img
+                                                    src={item.images[0]}
+                                                    alt={item.name}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                />
+                                            ) : (
+                                                <div className="flex items-center justify-center w-full h-full text-neutral-300 flex-col gap-1">
+                                                    <span className="text-2xl">📦</span>
+                                                </div>
+                                            )}
+                                            <span className="absolute top-1.5 right-1.5 text-[10px] font-semibold bg-white/90 text-emerald-700 px-1.5 py-0.5 rounded-full shadow-sm backdrop-blur-sm">
+                                                {item.mode}
+                                            </span>
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="p-2.5 flex flex-col flex-1">
+                                            <p className="font-semibold text-neutral-900 text-xs leading-tight line-clamp-2 mb-1.5">
+                                                {item.name}
+                                            </p>
+                                            <div className="flex flex-wrap gap-1 mb-auto">
+                                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-neutral-100 text-neutral-600">
+                                                    {item.category}
+                                                </span>
+                                                <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-neutral-200 text-neutral-500">
+                                                    {item.condition}
+                                                </span>
                                             </div>
-                                        )}
-                                        <Badge className="absolute top-3 right-3 bg-white/90 text-emerald-700 hover:bg-white backdrop-blur-sm border-0 font-medium shadow-sm">
-                                            {item.mode}
-                                        </Badge>
+                                            <div className="mt-2 pt-2 border-t border-neutral-100 flex items-center gap-1.5">
+                                                <Avatar className="h-4 w-4 shrink-0">
+                                                    <AvatarImage src={item.ownerId?.profileImage || ""} />
+                                                    <AvatarFallback className="text-[8px] bg-emerald-100 text-emerald-800">
+                                                        {item.ownerId?.name?.charAt(0) || "?"}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <span className="text-[10px] text-neutral-500 truncate">
+                                                    {item.ownerId?.name || "Unknown"}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <CardHeader className="p-4 pb-0">
-                                        <div className="flex justify-between items-start gap-2">
+                                    {/* ── Desktop card: original tall card with View Details button ── */}
+                                    <Card className="hidden sm:flex group overflow-hidden flex-col hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 border-neutral-200 rounded-2xl h-full">
+                                        <div className="aspect-square bg-neutral-100 relative overflow-hidden">
+                                            {item.images && item.images.length > 0 ? (
+                                                <img
+                                                    src={item.images[0]}
+                                                    alt={item.name}
+                                                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                                                />
+                                            ) : (
+                                                <div className="flex items-center justify-center w-full h-full text-neutral-300 flex-col gap-2">
+                                                    <span className="text-4xl">📦</span>
+                                                    <span className="text-sm">No Image</span>
+                                                </div>
+                                            )}
+                                            <Badge className="absolute top-3 right-3 bg-white/90 text-emerald-700 hover:bg-white backdrop-blur-sm border-0 font-medium shadow-sm">
+                                                {item.mode}
+                                            </Badge>
+                                        </div>
+
+                                        <CardHeader className="p-4 pb-0">
                                             <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-emerald-600 transition-colors">
                                                 {item.name}
                                             </h3>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2 mt-2">
-                                            <Badge variant="secondary" className="bg-neutral-100 text-neutral-600 font-normal">
-                                                {item.category}
-                                            </Badge>
-                                            <Badge variant="outline" className="text-neutral-500 font-normal">
-                                                {item.condition}
-                                            </Badge>
-                                        </div>
-                                    </CardHeader>
-
-                                    <CardContent className="p-4 flex-1">
-                                        <div className="flex items-center gap-2 mt-2 pt-4 border-t border-neutral-100">
-                                            <Avatar className="h-6 w-6">
-                                                <AvatarImage src={item.ownerId?.profileImage || ""} />
-                                                <AvatarFallback className="text-[10px] bg-emerald-100 text-emerald-800">
-                                                    {item.ownerId?.name?.charAt(0) || "?"}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="text-sm text-neutral-600 truncate flex-1 flex flex-col">
-                                                <span className="font-medium text-neutral-800">{item.ownerId?.name || "Unknown"}</span>
-                                                {item.ownerId?.college && <span className="text-xs text-neutral-500">{item.ownerId.college}</span>}
+                                            <div className="flex flex-wrap gap-2 mt-2">
+                                                <Badge variant="secondary" className="bg-neutral-100 text-neutral-600 font-normal">
+                                                    {item.category}
+                                                </Badge>
+                                                <Badge variant="outline" className="text-neutral-500 font-normal">
+                                                    {item.condition}
+                                                </Badge>
                                             </div>
-                                        </div>
-                                    </CardContent>
+                                        </CardHeader>
 
-                                    <CardFooter className="p-4 pt-0">
-                                        <Link href={`/item/${item._id || item.id}`} className="w-full">
+                                        <CardContent className="p-4 flex-1">
+                                            <div className="flex items-center gap-2 mt-2 pt-4 border-t border-neutral-100">
+                                                <Avatar className="h-6 w-6">
+                                                    <AvatarImage src={item.ownerId?.profileImage || ""} />
+                                                    <AvatarFallback className="text-[10px] bg-emerald-100 text-emerald-800">
+                                                        {item.ownerId?.name?.charAt(0) || "?"}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div className="text-sm text-neutral-600 truncate flex-1 flex flex-col">
+                                                    <span className="font-medium text-neutral-800">{item.ownerId?.name || "Unknown"}</span>
+                                                    {item.ownerId?.college && <span className="text-xs text-neutral-500">{item.ownerId.college}</span>}
+                                                </div>
+                                            </div>
+                                        </CardContent>
+
+                                        <CardFooter className="p-4 pt-0">
                                             <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
                                                 View Details
                                             </Button>
-                                        </Link>
-                                    </CardFooter>
-                                </Card>
+                                        </CardFooter>
+                                    </Card>
+                                </Link>
                             ))}
                         </div>
                     )}

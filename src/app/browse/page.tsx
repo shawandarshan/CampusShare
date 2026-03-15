@@ -76,18 +76,18 @@ function BrowseContent() {
 
     return (
         <div className="container mx-auto max-w-7xl px-4 py-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div className="flex flex-col gap-3 mb-6">
                 <div>
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-cyan-600">
+                    <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-cyan-600">
                         Browse Resources
                     </h1>
-                    <p className="text-neutral-500 mt-1">Find the equipment and materials you need.</p>
+                    <p className="text-neutral-500 mt-1 text-sm">Find the equipment and materials you need.</p>
                 </div>
 
-                <div className="relative w-full md:w-96">
+                <div className="relative w-full">
                     <Input
                         placeholder="Search items, books, tools..."
-                        className="pl-10"
+                        className="pl-10 text-neutral-900 placeholder:text-neutral-400 bg-white border-neutral-300"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -96,24 +96,40 @@ function BrowseContent() {
             </div>
 
             <div className="flex flex-col md:flex-row gap-8">
-                {/* Sidebar Filters */}
-                <div className="w-full md:w-64 space-y-6">
-                    <div>
-                        <h3 className="font-semibold mb-3 text-lg">Categories</h3>
-                        <div className="flex flex-col space-y-1">
-                            {categories.map((cat) => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setActiveCategory(cat)}
-                                    className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${activeCategory === cat
+                {/* Sidebar Filters — horizontal pills on mobile, vertical list on desktop */}
+                <div className="w-full md:w-56 shrink-0">
+                    <h3 className="font-semibold mb-2 text-sm text-neutral-900 md:text-base md:mb-3">Categories</h3>
+                    {/* Mobile: horizontal scroll */}
+                    <div className="flex gap-2 overflow-x-auto pb-1 md:hidden">
+                        {categories.map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => setActiveCategory(cat)}
+                                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-sm transition-colors shrink-0 ${
+                                    activeCategory === cat
                                         ? "bg-emerald-600 text-white font-medium shadow-sm"
-                                        : "text-neutral-800 hover:bg-neutral-200"
-                                        }`}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
-                        </div>
+                                        : "text-neutral-700 bg-neutral-100 hover:bg-neutral-200"
+                                }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                    {/* Desktop: vertical list */}
+                    <div className="hidden md:flex flex-col space-y-1">
+                        {categories.map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => setActiveCategory(cat)}
+                                className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                                    activeCategory === cat
+                                        ? "bg-emerald-600 text-white font-medium shadow-sm"
+                                        : "text-neutral-800 bg-transparent hover:bg-neutral-100"
+                                }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
@@ -124,12 +140,12 @@ function BrowseContent() {
                             <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
                         </div>
                     ) : items.length === 0 ? (
-                        <div className="text-center py-20 bg-white rounded-xl border border-dashed border-neutral-300">
+                        <div className="text-center py-16 bg-white rounded-xl border border-dashed border-neutral-300">
                             <h3 className="text-xl font-medium text-neutral-800">No resources found</h3>
-                            <p className="text-neutral-500 mt-2">Try adjusting your search or filters to find what you're looking for.</p>
+                            <p className="text-neutral-500 mt-2">Try adjusting your search or filters.</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                             {items.map((item) => (
                                 <Card key={item._id} className="group overflow-hidden flex flex-col hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-300 border-neutral-200">
                                     <div className="aspect-square bg-neutral-100 relative overflow-hidden">

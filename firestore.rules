@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Items collection:
+    // - Anyone can read (needed for browse/item detail pages)
+    // - Only authenticated @mce.edu.in users can create
+    // - Only the owner of an item can update or delete it
+    match /items/{itemId} {
+      allow read: if true;
+
+      allow create: if request.auth != null
+                    && request.auth.token.email != null
+                    && request.auth.token.email.matches('.*@mce\\.edu\\.in');
+
+      allow update, delete: if request.auth != null
+                             && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Deny all access to any other collection
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

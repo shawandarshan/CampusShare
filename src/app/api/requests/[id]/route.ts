@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function PATCH(
     req: Request,
@@ -21,7 +21,7 @@ export async function PATCH(
             return NextResponse.json({ error: "Invalid status" }, { status: 400 });
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from("requests")
             .update({ status, is_read: true })
             .eq("id", id)
@@ -55,7 +55,7 @@ export async function DELETE(
 
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
             .from("requests")
             .delete()
             .eq("id", id);

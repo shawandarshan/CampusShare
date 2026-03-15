@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET(req: Request) {
     try {
@@ -14,7 +14,7 @@ export async function GET(req: Request) {
         const type = url.searchParams.get("type"); // "incoming" or "outgoing"
         const userEmail = session.user.email!;
 
-        let query = supabase.from("requests").select("*");
+        let query = supabaseAdmin.from("requests").select("*");
 
         if (type === "outgoing") {
             query = query.eq("requester_email", userEmail);
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         // ✅ Duplicate check: prevent same user requesting same item twice
-        const { data: existing } = await supabase
+        const { data: existing } = await supabaseAdmin
             .from("requests")
             .select("id")
             .eq("item_id", body.itemId || "")
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
             is_read: false,
         };
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from("requests")
             .insert([newRequest])
             .select()

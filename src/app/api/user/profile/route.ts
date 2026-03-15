@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET(req: Request) {
     try {
@@ -12,7 +12,7 @@ export async function GET(req: Request) {
 
         const email = session.user.email;
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from("profiles")
             .select("*")
             .eq("email", email)
@@ -63,7 +63,7 @@ export async function PATCH(req: Request) {
         };
 
         // Upsert: insert if not exists, update if exists
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from("profiles")
             .upsert(profileData, { onConflict: "email" })
             .select()

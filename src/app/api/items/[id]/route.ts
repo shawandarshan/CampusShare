@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -46,8 +48,28 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user?.email) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { id } = await params;
+
+        // Verify the requester owns the item
         const docRef = doc(db, "items", id);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            return NextResponse.json({ error: "Item not found" }, { status: 404 });
+        }
+
+        const itemData = docSnap.data();
+        const userId = (session.user as any).id || session.user.email;
+
+        if (itemData?.ownerId && itemData.ownerId !== userId) {
+            return NextResponse.json({ error: "Forbidden: you do not own this item" }, { status: 403 });
+        }
+
         await deleteDoc(docRef);
         return NextResponse.json({ message: "Item deleted successfully" }, { status: 200 });
     } catch (error: any) {
@@ -61,9 +83,29 @@ export async function PATCH(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user?.email) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { id } = await params;
-        const body = await req.json();
+
+        // Verify the requester owns the item
         const docRef = doc(db, "items", id);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            return NextResponse.json({ error: "Item not found" }, { status: 404 });
+        }
+
+        const itemData = docSnap.data();
+        const userId = (session.user as any).id || session.user.email;
+
+        if (itemData?.ownerId && itemData.ownerId !== userId) {
+            return NextResponse.json({ error: "Forbidden: you do not own this item" }, { status: 403 });
+        }
+
+        const body = await req.json();
         await updateDoc(docRef, body);
         return NextResponse.json({ message: "Item updated successfully" }, { status: 200 });
     } catch (error: any) {

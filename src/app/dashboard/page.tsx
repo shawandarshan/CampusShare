@@ -258,9 +258,9 @@ export default function DashboardPage() {
 
                 {/* Main Content Area */}
                 <div className="flex-1">
-                    <div className="grid grid-cols-2 gap-4 mb-8">
+                    <div className="grid grid-cols-2 xs:grid-cols-2 gap-3 sm:gap-4 mb-8">
                         <Card className="bg-white border-neutral-200 shadow-sm">
-                            <CardContent className="p-6 flex items-center">
+                            <CardContent className="p-4 sm:p-6 flex items-center">
                                 <div className="bg-emerald-100 p-3 rounded-xl mr-4 text-emerald-600">
                                     <Package className="h-6 w-6" />
                                 </div>
@@ -271,7 +271,7 @@ export default function DashboardPage() {
                             </CardContent>
                         </Card>
                         <Card className="bg-white border-neutral-200 shadow-sm">
-                            <CardContent className="p-6 flex items-center">
+                            <CardContent className="p-4 sm:p-6 flex items-center">
                                 <div className="bg-cyan-100 p-3 rounded-xl mr-4 text-cyan-600">
                                     <Share2 className="h-6 w-6" />
                                 </div>
@@ -304,7 +304,7 @@ export default function DashboardPage() {
                         </CardContent>
                     </Card>
 
-                    <div className="mb-6 flex justify-between items-center">
+                    <div className="mb-6 flex flex-wrap justify-between items-center gap-2">
                         <h3 className="text-xl font-bold text-neutral-900">Your Listings</h3>
                         <Link href="/add-item">
                             <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">Add New Item</Button>

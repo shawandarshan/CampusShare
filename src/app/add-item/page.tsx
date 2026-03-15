@@ -121,7 +121,7 @@ export default function AddItemPage() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="category" className="text-neutral-900 font-medium">Category</Label>
                                 <Select required onValueChange={(val) => setFormData((prev) => ({ ...prev, category: val as string }))}>
@@ -169,7 +169,7 @@ export default function AddItemPage() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="mode" className="text-neutral-900 font-medium">Sharing Mode</Label>
                                 <Select required onValueChange={(val) => setFormData((prev) => ({ ...prev, mode: val as string }))}>

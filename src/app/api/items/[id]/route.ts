@@ -18,17 +18,43 @@ export async function GET(
 
         console.log("Firestore docSnap.exists():", docSnap.exists());
 
-        if (!docSnap.exists()) {
-            return NextResponse.json({ error: "Item not found" }, { status: 404 });
+        const data = docSnap.data();
+        const ownerId = data?.ownerId;
+        
+        // Fetch owner details from profiles collection
+        let ownerData = { name: "Anonymous", college: "Campus Member", image: "" };
+        if (ownerId) {
+            const profileRef = doc(db, "profiles", ownerId);
+            const profileSnap = await getDoc(profileRef);
+            if (profileSnap.exists()) {
+                const pData = profileSnap.data();
+                ownerData = {
+                    ...pData,
+                    name: pData.name || "Student",
+                    college: pData.college || "Meenakshi College of Engineering",
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any;
+            } else {
+                // Fallback if profile doesn't exist yet
+                ownerData = {
+                    name: "MCE Student",
+                    college: "Meenakshi College of Engineering",
+                    image: ""
+                };
+            }
         }
 
-        const data = {
+        const responseData = {
             _id: docSnap.id,
             id: docSnap.id,
-            ...docSnap.data(),
+            ...data,
+            ownerId: {
+                _id: ownerId,
+                ...ownerData
+            }
         };
 
-        return NextResponse.json(data, { status: 200 });
+        return NextResponse.json(responseData, { status: 200 });
     } catch (error: any) {
         console.error("GET item error:", error?.code, error?.message);
 

@@ -73,8 +73,7 @@ export async function POST(req: Request) {
             // Requester (from session + body profile info)
             requester_email: session.user.email || "",
             requester_name: session.user.name || "",
-            requester_image: session.user.image || "",
-            requester_college: body.requesterCollege || "Malnad College of Engineering",
+            requester_college: body.requesterCollege || "Meenakshi College of Engineering",
             requester_dept: body.requesterDept || "",
             requester_year: body.requesterYear || "",
             requester_phone: body.requesterPhone || "",

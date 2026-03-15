@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { supabaseAdmin } from "@/lib/supabase";
+import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export async function GET(req: Request) {
     try {
@@ -10,31 +11,35 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const email = session.user.email;
+        const userId = (session.user as any).id || session.user.email;
+        const profileRef = doc(db, "profiles", userId);
+        const profileSnap = await getDoc(profileRef);
 
-        const { data, error } = await supabaseAdmin
-            .from("profiles")
-            .select("*")
-            .eq("email", email)
-            .maybeSingle();
-
-        if (error) {
-            console.error("Supabase GET profile error:", error);
-            return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
+        let profileData;
+        if (profileSnap.exists()) {
+            profileData = profileSnap.data();
+        } else {
+            // Default profile for new users
+            profileData = {
+                name: session.user.name || "Student",
+                email: session.user.email,
+                profileImage: session.user.image || "",
+                college: "Meenakshi College of Engineering",
+                department: "",
+                year: "",
+                contact: "",
+            };
         }
 
-        // Return existing or default profile
-        const profile = data || {
-            name: session.user.name || "Student",
-            email,
-            profile_image: session.user.image || "",
-            college: "Malnad College of Engineering",
-            department: "",
-            year: "",
-            contact: "",
-        };
+        // Also fetch user's items from Firestore
+        const itemsQuery = query(collection(db, "items"), where("ownerId", "==", userId));
+        const itemsSnap = await getDocs(itemsQuery);
+        const items = itemsSnap.docs.map(doc => ({
+            _id: doc.id,
+            ...doc.data()
+        }));
 
-        return NextResponse.json({ user: profile, items: [] }, { status: 200 });
+        return NextResponse.json({ user: profileData, items }, { status: 200 });
     } catch (error) {
         console.error("GET profile exception:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -48,33 +53,36 @@ export async function PATCH(req: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const email = session.user.email;
+        const userId = (session.user as any).id || session.user.email;
         const body = await req.json();
 
-        const profileData = {
-            email,
+        const profileRef = doc(db, "profiles", userId);
+        const profileSnap = await getDoc(profileRef);
+
+        const updatedProfile = {
             name: body.name || session.user.name || "Student",
-            profile_image: body.profileImage || session.user.image || "",
-            college: body.college || "",
+            profileImage: body.profileImage || session.user.image || "",
+            college: body.college || "Meenakshi College of Engineering",
             department: body.department || "",
             year: body.year || "",
             contact: body.contact || "",
-            updated_at: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
         };
 
-        // Upsert: insert if not exists, update if exists
-        const { data, error } = await supabaseAdmin
-            .from("profiles")
-            .upsert(profileData, { onConflict: "email" })
-            .select()
-            .single();
-
-        if (error) {
-            console.error("Supabase PATCH profile error:", error);
-            return NextResponse.json({ error: "Failed to update profile", details: error.message }, { status: 500 });
+        if (profileSnap.exists()) {
+            await updateDoc(profileRef, updatedProfile);
+        } else {
+            await setDoc(profileRef, {
+                ...updatedProfile,
+                email: session.user.email,
+                createdAt: new Date().toISOString(),
+            });
         }
 
-        return NextResponse.json({ success: true, user: data }, { status: 200 });
+        return NextResponse.json({ 
+            success: true, 
+            user: { ...updatedProfile, email: session.user.email } 
+        }, { status: 200 });
     } catch (error) {
         console.error("PATCH profile exception:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

@@ -57,7 +57,7 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                 if (profileRes.ok) {
                     const profileData = await profileRes.json();
                     requesterProfile = {
-                        college: profileData.user?.college || "Malnad College of Engineering",
+                        college: profileData.user?.college || "Meenakshi College of Engineering",
                         department: profileData.user?.department || "",
                         year: profileData.user?.year || "",
                         contact: profileData.user?.contact || "",
@@ -220,10 +220,19 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                 </Avatar>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2">
-                                        <User className="h-4 w-4 text-neutral-400" />
+                                        <User className="h-4 w-4 text-emerald-600/70" />
                                         <p className="font-semibold text-neutral-900">{ownerName}</p>
                                     </div>
-                                    <p className="text-sm text-neutral-500 mt-0.5">{ownerCollege}</p>
+                                    <div className="flex flex-col mt-1 gap-0.5">
+                                        <p className="text-sm font-medium text-neutral-700">{ownerCollege}</p>
+                                        {(item.ownerId?.department || item.ownerId?.year) && (
+                                            <p className="text-xs text-neutral-500">
+                                                {item.ownerId?.department && `${item.ownerId.department}`}
+                                                {item.ownerId?.department && item.ownerId?.year && " • "}
+                                                {item.ownerId?.year && `Year ${item.ownerId.year}`}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>

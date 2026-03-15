@@ -66,7 +66,7 @@ export default function AddItemPage() {
                 ownerId: session?.user ? {
                     _id: session.user.email, // using email as ID or you could use a proper session id
                     name: session.user.name,
-                    college: "Malnad College of Engineering", // Mock or retrieve from profile
+                    college: "Meenakshi College of Engineering", // Mock or retrieve from profile
                     profileImage: session.user.image
                 } : null
             };

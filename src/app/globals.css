@@ -42,8 +42,8 @@
 
 /* Global Cursor & Performance Base */
 html, body {
-  /* Simplified Pencil Cursor: Faster rendering by using a smaller, cleaner SVG */
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'></path></svg>") 0 20, auto;
+  /* Cute Fountain Pen Cursor - Softer colors and rounded tip */
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m12 19 7-7 3 3-7 7-3-3z'/><path d='m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'/><path d='m2 2 5 5'/><path d='m9.5 9.5 4 4'/></svg>") 0 24, auto;
   background: var(--background);
   color: var(--foreground);
   @apply antialiased;
@@ -58,9 +58,9 @@ body {
   background-attachment: fixed;
 }
 
-/* Ensure interactive elements feel responsive */
+/* Cute Pointing Pen for links/buttons */
 a, button, [role="button"] {
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'></path><path d='M15 5l4 4'></path></svg>") 0 20, pointer;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m12 19 7-7 3 3-7 7-3-3z'/><path d='m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'/><path d='m2 2 5 5'/><path d='m9.5 9.5 4 4'/><circle cx='18' cy='6' r='3' fill='%2310b981' fill-opacity='0.2' stroke='none'/></svg>") 0 24, pointer;
 }
 
 @layer utilities {

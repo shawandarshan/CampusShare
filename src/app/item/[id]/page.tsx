@@ -333,7 +333,6 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                             </div>
                         )}
                     </div>
-/div>
                 </div>
             </div>
         </div>

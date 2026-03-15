@@ -83,10 +83,7 @@ export default function Navbar() {
                     ) : (
                         <div className="flex items-center gap-2">
                             <Link href="/auth/signin">
-                                <Button variant="ghost" className="text-neutral-700">Sign In</Button>
-                            </Link>
-                            <Link href="/auth/register">
-                                <Button variant="default" className="bg-emerald-600 hover:bg-emerald-700">Get Started</Button>
+                                <Button variant="default" className="bg-emerald-600 hover:bg-emerald-700">Login / Join</Button>
                             </Link>
                         </div>
                     )}
@@ -151,11 +148,8 @@ export default function Navbar() {
                         </>
                     ) : (
                         <>
-                            <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
-                                <Button variant="ghost" className="w-full justify-start text-neutral-800">Sign In</Button>
-                            </Link>
-                            <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
-                                <Button className="w-full bg-emerald-600 hover:bg-emerald-700">Get Started</Button>
+                            <Link href="/auth/signin" className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                                <Button className="w-full bg-emerald-600 hover:bg-emerald-700">Login / Join</Button>
                             </Link>
                         </>
                     )}

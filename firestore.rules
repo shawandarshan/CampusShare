@@ -40,6 +40,21 @@ service cloud.firestore {
       allow write: if isAuthenticated() && request.auth.uid == userId;
     }
 
+    // Requests collection:
+    match /requests/{requestId} {
+      allow create: if isAuthenticated();
+      // Only the requester or the owner of the item can read the request
+      allow read: if isAuthenticated() && 
+                    (request.auth.uid == resource.data.requesterId || 
+                     request.auth.uid == resource.data.ownerId);
+      // Only the owner of the item can update the status
+      allow update: if isAuthenticated() && 
+                      request.auth.uid == resource.data.ownerId &&
+                      request.resource.data.requesterId == resource.data.requesterId;
+      allow delete: if isAuthenticated() && 
+                      request.auth.uid == resource.data.requesterId;
+    }
+
     // Default deny
     match /{document=**} {
       allow read, write: if false;

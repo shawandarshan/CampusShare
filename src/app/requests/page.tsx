@@ -51,7 +51,7 @@ export default function RequestsPage() {
         setIsUpdating(id);
         try {
             const res = await fetch(`/api/requests/${id}`, {
-                method: "PUT",
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: newStatus }),
             });
@@ -126,14 +126,21 @@ export default function RequestsPage() {
                             <CardContent className="p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div className="space-y-1 flex-1">
                                     <div className="flex items-center gap-3">
-                                        <h3 className="font-semibold text-neutral-900 text-lg">{req.itemId?.name || "Unknown Item"}</h3>
+                                        <h3 className="font-semibold text-neutral-900 text-lg">{req.itemMetadata?.name || "Unknown Item"}</h3>
                                         <Badge variant="outline" className={getStatusColor(req.status)}>
                                             {req.status}
                                         </Badge>
                                     </div>
                                     <p className="text-sm text-neutral-600">
-                                        Requested by: <span className="font-medium text-neutral-900">{req.requesterId?.name || "Student"}</span> from {req.requesterId?.college || "College"}
+                                        Requested by: <span className="font-medium text-neutral-900">{req.requesterMetadata?.name || "Student"}</span> from {req.requesterMetadata?.college || "Meenakshi College of Engineering"}
                                     </p>
+                                    {(req.requesterMetadata?.department || req.requesterMetadata?.year) && (
+                                        <p className="text-xs text-neutral-500">
+                                            {req.requesterMetadata?.department && `${req.requesterMetadata.department}`}
+                                            {req.requesterMetadata?.department && req.requesterMetadata?.year && " • "}
+                                            {req.requesterMetadata?.year && `Year ${req.requesterMetadata.year}`}
+                                        </p>
+                                    )}
                                     {req.message && (
                                         <p className="text-sm text-neutral-500 italic mt-2 bg-neutral-50 p-2 rounded border border-neutral-100">
                                             "{req.message}"

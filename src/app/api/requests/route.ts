@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { supabaseAdmin } from "@/lib/supabase";
+import { collection, addDoc, getDocs, query, where, orderBy } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export async function GET(req: Request) {
     try {
@@ -12,25 +13,31 @@ export async function GET(req: Request) {
 
         const url = new URL(req.url);
         const type = url.searchParams.get("type"); // "incoming" or "outgoing"
-        const userEmail = session.user.email!;
+        const userId = (session.user as any).id || session.user.email;
 
-        let query = supabaseAdmin.from("requests").select("*");
-
+        let requestsQuery;
         if (type === "outgoing") {
-            query = query.eq("requester_email", userEmail);
+            requestsQuery = query(
+                collection(db, "requests"),
+                where("requesterId", "==", userId),
+                orderBy("createdAt", "desc")
+            );
         } else {
             // Default: incoming requests for items owned by current user
-            query = query.eq("owner_email", userEmail);
+            requestsQuery = query(
+                collection(db, "requests"),
+                where("ownerId", "==", userId),
+                orderBy("createdAt", "desc")
+            );
         }
 
-        const { data, error } = await query.order("created_at", { ascending: false });
+        const querySnapshot = await getDocs(requestsQuery);
+        const requests = querySnapshot.docs.map(doc => ({
+            _id: doc.id,
+            ...doc.data()
+        }));
 
-        if (error) {
-            console.error("Supabase GET requests error:", error);
-            return NextResponse.json({ error: "Failed to fetch requests", details: error.message }, { status: 500 });
-        }
-
-        return NextResponse.json({ requests: data || [] }, { status: 200 });
+        return NextResponse.json({ requests }, { status: 200 });
     } catch (error: any) {
         console.error("GET requests exception:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -45,17 +52,18 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
+        const userId = (session.user as any).id || session.user.email;
 
         // ✅ Duplicate check: prevent same user requesting same item twice
-        const { data: existing } = await supabaseAdmin
-            .from("requests")
-            .select("id")
-            .eq("item_id", body.itemId || "")
-            .eq("requester_email", session.user.email!)
-            .eq("status", "pending")
-            .maybeSingle();
+        const existingQuery = query(
+            collection(db, "requests"),
+            where("itemId", "==", body.itemId || ""),
+            where("requesterId", "==", userId),
+            where("status", "==", "Pending")
+        );
+        const existingSnap = await getDocs(existingQuery);
 
-        if (existing) {
+        if (!existingSnap.empty) {
             return NextResponse.json(
                 { error: "You already have a pending request for this item." },
                 { status: 409 }
@@ -63,40 +71,45 @@ export async function POST(req: Request) {
         }
 
         const newRequest = {
-            item_id: body.itemId || "",
-            item_name: body.itemName || "",
-
+            itemId: {
+                id: body.itemId || "",
+                name: body.itemName || "Item",
+            },
             // Owner
-            owner_id: body.ownerId || "",
-            owner_email: body.ownerEmail || "",
+            ownerId: body.ownerId || "",
+            ownerEmail: body.ownerEmail || "",
 
-            // Requester (from session + body profile info)
-            requester_email: session.user.email || "",
-            requester_name: session.user.name || "",
-            requester_college: body.requesterCollege || "Meenakshi College of Engineering",
-            requester_dept: body.requesterDept || "",
-            requester_year: body.requesterYear || "",
-            requester_phone: body.requesterPhone || "",
+            // Requester
+            requesterId: {
+                _id: userId,
+                name: session.user.name || "Student",
+                college: body.requesterCollege || "Meenakshi College of Engineering",
+                department: body.requesterDept || "",
+                year: body.requesterYear || "",
+                phone: body.requesterPhone || "",
+            },
+            requesterIdRaw: userId, // For query indexing
 
             message: body.message || "",
-            status: "pending",
-            is_read: false,
+            status: "Pending",
+            isRead: false,
+            createdAt: new Date().toISOString(),
         };
 
-        const { data, error } = await supabaseAdmin
-            .from("requests")
-            .insert([newRequest])
-            .select()
-            .single();
+        // Standardize structure for queries
+        const docData = {
+            ...newRequest,
+            requesterId: userId, // Override indexable ID
+            requesterMetadata: newRequest.requesterId, // Keep details for UI
+            itemMetadata: newRequest.itemId, // Keep details for UI
+            itemId: newRequest.itemId.id // Indexable ID
+        };
 
-        if (error) {
-            console.error("Supabase POST requests error:", error);
-            return NextResponse.json({ error: "Failed to create request", details: error.message }, { status: 500 });
-        }
+        const docRef = await addDoc(collection(db, "requests"), docData);
 
         return NextResponse.json({
             message: "Request created successfully",
-            request: data,
+            request: { _id: docRef.id, ...docData },
         }, { status: 201 });
     } catch (error: any) {
         console.error("POST requests exception:", error);

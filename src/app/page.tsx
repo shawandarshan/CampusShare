@@ -1,7 +1,22 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, BookOpen, Cpu, Wrench, Search, FlaskConical, Users, Sprout } from "lucide-react";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+  transition: { duration: 0.6 }
+};
+
+const staggerContainer = {
+  initial: {},
+  whileInView: { transition: { staggerChildren: 0.1 } },
+  viewport: { once: true }
+};
 
 export default function Home() {
   return (
@@ -23,11 +38,16 @@ export default function Home() {
           <div className="absolute bottom-auto left-0 right-auto top-0 h-[600px] w-[600px] translate-x-[10%] translate-y-[20%] rounded-full bg-cyan-50 opacity-40 blur-[100px]"></div>
         </div>
 
-        <div className="relative z-10">
-          <div className="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-wider text-emerald-700 uppercase bg-emerald-100/50 rounded-full border border-emerald-200/50 backdrop-blur-sm">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10"
+        >
+          <div className="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-wider text-emerald-700 uppercase bg-emerald-100/50 rounded-full border border-emerald-200/50 backdrop-blur-sm shadow-sm">
             ✨ Exclusive for MCE Students
           </div>
-          <h1 className="max-w-5xl text-5xl font-black tracking-tight sm:text-6xl md:text-7xl lg:text-8xl text-neutral-900 pb-4">
+          <h1 className="max-w-5xl text-5xl font-black tracking-tight sm:text-6xl md:text-7xl lg:text-8xl text-neutral-900 pb-4 leading-[1.1]">
             Share Resources. <br className="hidden sm:block" /> 
             <span className="text-emerald-600 highlight-emerald">Save Money.</span>
           </h1>
@@ -37,7 +57,7 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row mt-12 gap-5 justify-center">
             <Link href="/browse">
-              <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-emerald-600 hover:bg-emerald-700 shadow-2xl shadow-emerald-500/30 transition-all hover:-translate-y-1.5 active:scale-95 group rounded-2xl">
+              <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-xl font-bold bg-emerald-600 hover:bg-emerald-700 shadow-2xl shadow-emerald-500/30 transition-all hover:-translate-y-1.5 active:scale-95 group rounded-2xl glow-emerald">
                 Browse Items <Search className="ml-2 h-6 w-6 group-hover:rotate-12 transition-transform" />
               </Button>
             </Link>
@@ -47,61 +67,84 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-        </div>
-      </section>      {/* Features/Stats Section */}
-      <section className="py-24 px-4">
+        </motion.div>
+      </section>
+
+      {/* Features/Stats Section */}
+      <section className="py-24 px-4 relative">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-            <div className="bg-white p-10 rounded-3xl border-2 border-emerald-100/50 paper-shadow group hover:-translate-y-2 transition-all duration-300">
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto"
+          >
+            <motion.div variants={fadeInUp} className="bg-white p-10 rounded-3xl border-2 border-emerald-100/50 paper-shadow group hover:glow-emerald transition-all duration-300">
               <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-8 text-emerald-600 group-hover:scale-110 transition-transform">
                 <Sprout className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-neutral-800">Eco-Friendly</h3>
               <p className="text-neutral-600 leading-relaxed font-medium">Reduce your carbon footprint. Give unused items a second life and help promote a circular campus economy.</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-10 rounded-3xl border-2 border-cyan-100/50 paper-shadow group hover:-translate-y-2 transition-all duration-300">
+            <motion.div variants={fadeInUp} className="bg-white p-10 rounded-3xl border-2 border-cyan-100/50 paper-shadow group hover:glow-cyan transition-all duration-300">
               <div className="w-16 h-16 bg-cyan-100 rounded-2xl flex items-center justify-center mb-8 text-cyan-600 group-hover:scale-110 transition-transform">
                 <Users className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-neutral-800">MCE Community</h3>
               <p className="text-neutral-600 leading-relaxed font-medium">Verify your peers. Connect with trusted students securely and collaborate on exciting campus projects.</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white p-10 rounded-3xl border-2 border-amber-100/50 paper-shadow group hover:-translate-y-2 transition-all duration-300">
+            <motion.div variants={fadeInUp} className="bg-white p-10 rounded-3xl border-2 border-amber-100/50 paper-shadow group hover:glow-emerald transition-all duration-300">
               <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-8 text-amber-600 group-hover:scale-110 transition-transform">
                 <Wrench className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-neutral-800">Smart Savings</h3>
               <p className="text-neutral-600 leading-relaxed font-medium">Stop overspending. Borrow expensive textbooks and lab equipment instead of buying brand new gear.</p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Categories Showcase */}
-      <section className="py-24 px-4">
+      <section className="py-24 px-4 bg-white/30 backdrop-blur-sm">
         <div className="container mx-auto max-w-6xl text-center">
-          <h2 className="text-4xl font-black mb-4 text-neutral-900">Explore <span className="highlight-cyan">by Category</span></h2>
-          <p className="text-neutral-500 mb-16 max-w-xl mx-auto font-medium">Find exactly what you need for this semester, from textbooks to microcontrollers.</p>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-4xl font-black mb-4 text-neutral-900">Explore <span className="highlight-cyan">by Category</span></h2>
+            <p className="text-neutral-500 mb-16 max-w-xl mx-auto font-medium">Find exactly what you need for this semester, from textbooks to microcontrollers.</p>
+          </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-6"
+          >
             {[
-              { name: "Books", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-50/50", border: "border-blue-100" },
-              { name: "Electronics", icon: Cpu, color: "text-emerald-500", bg: "bg-emerald-50/50", border: "border-emerald-100" },
-              { name: "Lab Gear", icon: FlaskConical, color: "text-rose-500", bg: "bg-rose-50/50", border: "border-rose-100" },
-              { name: "Hand Tools", icon: Wrench, color: "text-amber-500", bg: "bg-amber-50/50", border: "border-amber-100" },
+              { name: "Books", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-50/50", border: "border-blue-100", glow: "hover:glow-cyan" },
+              { name: "Electronics", icon: Cpu, color: "text-emerald-500", bg: "bg-emerald-50/50", border: "border-emerald-100", glow: "hover:glow-emerald" },
+              { name: "Lab Gear", icon: FlaskConical, color: "text-rose-500", bg: "bg-rose-50/50", border: "border-rose-100", glow: "hover:glow-cyan" },
+              { name: "Hand Tools", icon: Wrench, color: "text-amber-500", bg: "bg-amber-50/50", border: "border-amber-100", glow: "hover:glow-emerald" },
             ].map((cat) => (
-              <Link href={`/browse?category=${cat.name}`} key={cat.name}>
-                <div className={`p-8 rounded-3xl ${cat.bg} border-2 ${cat.border} cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col items-center bg-white/50 backdrop-blur-sm`}>
-                  <div className="p-4 bg-white rounded-2xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
-                    <cat.icon className={`w-10 h-10 ${cat.color}`} />
+              <motion.div key={cat.name} variants={fadeInUp}>
+                <Link href={`/browse?category=${cat.name}`}>
+                  <div className={`p-8 rounded-3xl ${cat.bg} border-2 ${cat.border} cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group flex flex-col items-center bg-white/50 backdrop-blur-sm ${cat.glow}`}>
+                    <div className="p-4 bg-white rounded-2xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                      <cat.icon className={`w-10 h-10 ${cat.color}`} />
+                    </div>
+                    <span className="font-bold text-neutral-800 text-lg">{cat.name}</span>
                   </div>
-                  <span className="font-bold text-neutral-800 text-lg">{cat.name}</span>
-                </div>
-              </Link>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

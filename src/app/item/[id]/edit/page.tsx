@@ -101,6 +101,12 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
         e.preventDefault();
         setIsLoading(true);
 
+        if (formData.mode === "Sell" && !formData.price) {
+            toast({ title: "Price Required", description: "Please enter a price for items you wish to sell.", variant: "destructive" });
+            setIsLoading(false);
+            return;
+        }
+
         try {
             // 1. Upload new images if any
             const newUploadedUrls: string[] = [];

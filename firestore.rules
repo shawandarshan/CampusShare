@@ -9,7 +9,8 @@ service cloud.firestore {
 
     function isMceStudent() {
       return isAuthenticated() && 
-             request.auth.token.email.matches('.*@mce\\.edu\\.in');
+             (request.auth.token.email.matches('.*@mce\\.edu\\.in') || 
+              request.auth.token.email == "shawandarshan6002@gmail.com");
     }
 
     function isOwner(data) {

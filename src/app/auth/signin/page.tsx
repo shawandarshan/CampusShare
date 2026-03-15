@@ -22,7 +22,8 @@ export default function SignInPage() {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
 
-            if (!user.email?.endsWith("@mce.edu.in")) {
+            const isAllowedGmail = user.email === "shawandarshan6002@gmail.com";
+            if (!user.email?.endsWith("@mce.edu.in") && !isAllowedGmail) {
                 toast({
                     title: "Access Denied",
                     description: "Only @mce.edu.in accounts are allowed.",

@@ -17,21 +17,47 @@ export async function GET(req: Request) {
         }
 
         const querySnapshot = await getDocs(firestoreQuery);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let items: any[] = querySnapshot.docs.map((doc) => ({
-            _id: doc.id,
-            ...doc.data(),
+        
+        // Fetch all items and then enrich them with profile data
+        const items = await Promise.all(querySnapshot.docs.map(async (docSnap) => {
+            const data = docSnap.data();
+            const ownerId = data?.ownerId;
+            
+            let ownerData = { name: "MCE Student", college: "Meenakshi College of Engineering", profileImage: "" };
+            
+            if (ownerId) {
+                const profileRef = doc(db, "profiles", ownerId);
+                const profileSnap = await getDoc(profileRef);
+                if (profileSnap.exists()) {
+                    const pData = profileSnap.data();
+                    ownerData = {
+                        name: pData.name || "Student",
+                        college: pData.college || "Meenakshi College of Engineering",
+                        profileImage: pData.profileImage || ""
+                    };
+                }
+            }
+
+            return {
+                _id: docSnap.id,
+                ...data,
+                ownerId: {
+                    _id: ownerId,
+                    ...ownerData
+                }
+            };
         }));
 
         // Client-side text filter (Firestore doesn't support LIKE search)
+        let filteredItems = items;
         if (querySearch) {
             const lower = querySearch.toLowerCase();
-            items = items.filter((item) =>
+            filteredItems = items.filter((item) =>
                 item.name?.toLowerCase().includes(lower)
             );
         }
 
-        return NextResponse.json({ items }, { status: 200 });
+        return NextResponse.json({ items: filteredItems }, { status: 200 });
     } catch (error) {
         console.error("GET items error:", error);
         return NextResponse.json({ error: "Failed to fetch items" }, { status: 500 });

@@ -245,7 +245,7 @@ function BrowseContent() {
                                                             {item.ownerId?.name || "Unknown"}
                                                         </span>
                                                         <span className="text-[10px] text-neutral-500 truncate max-w-[100px]">
-                                                            {item.ownerId?.college || "MCE"}
+                                                            {item.ownerId?.college || "Meenakshi College of Engineering"}
                                                         </span>
                                                     </div>
                                                 </div>

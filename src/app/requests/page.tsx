@@ -128,21 +128,34 @@ export default function RequestsPage() {
                                     <div className="flex items-center gap-3">
                                         <h3 className="font-semibold text-neutral-900 text-lg">{req.itemMetadata?.name || "Unknown Item"}</h3>
                                         <Badge variant="outline" className={getStatusColor(req.status)}>
-                                            {req.status}
+                                            {req.status === "Pending" ? "Holding Period" : req.status}
                                         </Badge>
+                                        {req.itemMetadata?.price && (
+                                            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-100 font-bold">
+                                                ₹{req.itemMetadata.price}
+                                            </Badge>
+                                        )}
                                     </div>
                                     <p className="text-sm text-neutral-600">
                                         Requested by: <span className="font-medium text-neutral-900">{req.requesterMetadata?.name || "Student"}</span> from {req.requesterMetadata?.college || "Meenakshi College of Engineering"}
                                     </p>
-                                    {(req.requesterMetadata?.department || req.requesterMetadata?.year) && (
-                                        <p className="text-xs text-neutral-500">
-                                            {req.requesterMetadata?.department && `${req.requesterMetadata.department}`}
-                                            {req.requesterMetadata?.department && req.requesterMetadata?.year && " • "}
-                                            {req.requesterMetadata?.year && `Year ${req.requesterMetadata.year}`}
-                                        </p>
-                                    )}
+                                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+                                        {(req.requesterMetadata?.department || req.requesterMetadata?.year) && (
+                                            <p className="text-xs text-neutral-500 font-medium">
+                                                {req.requesterMetadata?.department && `${req.requesterMetadata.department}`}
+                                                {req.requesterMetadata?.department && req.requesterMetadata?.year && " • "}
+                                                {req.requesterMetadata?.year && `Year ${req.requesterMetadata.year}`}
+                                            </p>
+                                        )}
+                                        {req.requesterMetadata?.phone && (
+                                            <p className="text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                                                📞 {req.requesterMetadata.phone}
+                                            </p>
+                                        )}
+                                    </div>
                                     {req.message && (
-                                        <p className="text-sm text-neutral-500 italic mt-2 bg-neutral-50 p-2 rounded border border-neutral-100">
+                                        <p className="text-sm text-neutral-500 italic mt-3 bg-neutral-50 p-3 rounded-xl border border-neutral-100 relative">
+                                            <span className="absolute -top-2 left-3 bg-white px-2 text-[10px] text-neutral-400 font-bold uppercase tracking-wider border border-neutral-100 rounded">Message</span>
                                             "{req.message}"
                                         </p>
                                     )}

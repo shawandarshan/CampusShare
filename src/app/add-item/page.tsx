@@ -190,10 +190,9 @@ export default function AddItemPage() {
                                         <SelectValue placeholder="Select Condition" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="New">New</SelectItem>
-                                        <SelectItem value="Good">Good</SelectItem>
-                                        <SelectItem value="Fair">Fair</SelectItem>
-                                        <SelectItem value="Poor">Poor</SelectItem>
+                                        <SelectItem value="Borrow">Borrow</SelectItem>
+                                        <SelectItem value="Sell">Sell</SelectItem>
+                                        <SelectItem value="Donate">Donate</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -215,13 +214,12 @@ export default function AddItemPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="mode" className="text-neutral-900 font-medium">Sharing Mode</Label>
-                                <Select required onValueChange={(val) => setFormData((prev) => ({ ...prev, mode: val as string }))}>
+                                <Select required onValueChange={(val: string) => setFormData((prev) => ({ ...prev, mode: val }))}>
                                     <SelectTrigger className="text-neutral-900 bg-white border-emerald-200">
                                         <SelectValue placeholder="Select Mode" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="Borrow">Borrow</SelectItem>
-                                        <SelectItem value="Exchange">Exchange</SelectItem>
                                         <SelectItem value="Sell">Sell (Direct Sale)</SelectItem>
                                         <SelectItem value="Donate">Donate</SelectItem>
                                     </SelectContent>

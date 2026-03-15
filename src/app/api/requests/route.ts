@@ -101,7 +101,11 @@ export async function POST(req: Request) {
             ...newRequest,
             requesterId: userId, // Override indexable ID
             requesterMetadata: newRequest.requesterId, // Keep details for UI
-            itemMetadata: newRequest.itemId, // Keep details for UI
+            itemMetadata: {
+                ...newRequest.itemId,
+                price: body.itemPrice || "",
+                mode: body.itemMode || "Borrow",
+            }, 
             itemId: newRequest.itemId.id // Indexable ID
         };
 

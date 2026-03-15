@@ -81,6 +81,9 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                     requesterDept: requesterProfile.department,
                     requesterYear: requesterProfile.year,
                     requesterPhone: requesterProfile.contact,
+                    // New: Include price and mode for notifications
+                    itemPrice: item.price || "",
+                    itemMode: item.mode || "Borrow",
                 }),
             });
 

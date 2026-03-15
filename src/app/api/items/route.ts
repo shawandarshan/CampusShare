@@ -80,6 +80,7 @@ export async function POST(req: Request) {
             description: body.description || "",
             availability: body.availability || "",
             mode: body.mode || "",
+            price: body.price || "",
             images: body.images || [],
             imageUrl: body.images?.[0] || "",
             ownerId: (session.user as any).id || session.user.email, // Force ownerId from the authenticated session

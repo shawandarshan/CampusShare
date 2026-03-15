@@ -214,7 +214,7 @@ export default function AddItemPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="mode" className="text-neutral-900 font-medium">Sharing Mode</Label>
-                                <Select required onValueChange={(val: string) => setFormData((prev) => ({ ...prev, mode: val }))}>
+                                <Select required onValueChange={(val: string | null) => setFormData((prev) => ({ ...prev, mode: val || "" }))}>
                                     <SelectTrigger className="text-neutral-900 bg-white border-emerald-200">
                                         <SelectValue placeholder="Select Mode" />
                                     </SelectTrigger>

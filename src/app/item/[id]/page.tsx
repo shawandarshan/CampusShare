@@ -327,7 +327,7 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                     </div>
                                 ) : (
                                     item.mode === "Sell"
-                                    ? `Buy Resource for ₹${item.price || "0"}`
+                                    ? `Buy Resource for ₹${item.price || item.itemPrice || "0"}`
                                     : `Request to ${item.mode || "Borrow"}`
                                 )}
                             </Button>

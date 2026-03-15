@@ -176,7 +176,7 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-neutral-900 font-bold ml-1">Category</Label>
-                                <Select value={formData.category} onValueChange={(val: string) => setFormData((prev) => ({ ...prev, category: val }))}>
+                                <Select value={formData.category} onValueChange={(val: string | null) => setFormData((prev) => ({ ...prev, category: val || "" }))}>
                                     <SelectTrigger className="h-12 border-neutral-200 rounded-xl">
                                         <SelectValue placeholder="Category" />
                                     </SelectTrigger>
@@ -192,7 +192,7 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-neutral-900 font-bold ml-1">Condition</Label>
-                                <Select value={formData.condition} onValueChange={(val: string) => setFormData((prev) => ({ ...prev, condition: val }))}>
+                                <Select value={formData.condition} onValueChange={(val: string | null) => setFormData((prev) => ({ ...prev, condition: val || "" }))}>
                                     <SelectTrigger className="h-12 border-neutral-200 rounded-xl">
                                         <SelectValue placeholder="Condition" />
                                     </SelectTrigger>
@@ -220,7 +220,7 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-neutral-900 font-bold ml-1">Sharing Mode</Label>
-                                <Select value={formData.mode} onValueChange={(val: string) => setFormData((prev) => ({ ...prev, mode: val }))}>
+                                <Select value={formData.mode} onValueChange={(val: string | null) => setFormData((prev) => ({ ...prev, mode: val || "" }))}>
                                     <SelectTrigger className="h-12 border-emerald-100 rounded-xl bg-emerald-50/20">
                                         <SelectValue placeholder="Mode" />
                                     </SelectTrigger>

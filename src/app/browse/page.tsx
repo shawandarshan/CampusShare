@@ -18,7 +18,7 @@ interface Item {
     condition: string;
     images: string[] | null;
     mode: string;
-    availability: string;
+    price?: string;
     ownerId: {
         _id?: string;
         name: string;
@@ -167,6 +167,11 @@ function BrowseContent() {
                                             <span className="absolute top-1.5 right-1.5 text-[10px] font-semibold bg-white/90 text-emerald-700 px-1.5 py-0.5 rounded-full shadow-sm backdrop-blur-sm">
                                                 {item.mode}
                                             </span>
+                                            {item.mode === "Sell" && item.price && (
+                                                <div className="absolute bottom-1.5 left-1.5 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
+                                                    ₹{item.price}
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* Content */}
@@ -250,9 +255,9 @@ function BrowseContent() {
                                                 </div>
                                             </div>
                                             
-                                            {item.mode === "Sell" && (item as any).price ? (
-                                                <div className="text-emerald-700 font-bold text-sm">
-                                                    ₹{(item as any).price}
+                                            {item.mode === "Sell" && item.price ? (
+                                                <div className="text-emerald-700 font-bold text-sm bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 shadow-sm">
+                                                    ₹{item.price}
                                                 </div>
                                             ) : (
                                                 <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium h-8 px-3 rounded-lg text-xs">

@@ -1,35 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fdfdfd;
+  --foreground: #1e293b;
 
   --card: #ffffff;
-  --card-foreground: #020817;
+  --card-foreground: #0f172a;
 
   --popover: #ffffff;
-  --popover-foreground: #020817;
+  --popover-foreground: #0f172a;
 
-  --primary: #0f172a;
-  --primary-foreground: #f8fafc;
+  --primary: #10b981;
+  --primary-foreground: #ffffff;
 
   --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
+  --secondary-foreground: #1e293b;
 
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
 
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
+  --accent: #f8fafc;
+  --accent-foreground: #1e293b;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
 
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #94a3b8;
+  --ring: #10b981;
 
-  --radius: 0.5rem;
+  --radius: 1.25rem;
 }
 
 @theme inline {
@@ -37,34 +37,46 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --card: #020817;
-    --card-foreground: #f8fafc;
-    --popover: #020817;
-    --popover-foreground: #f8fafc;
-    --primary: #f8fafc;
-    --primary-foreground: #0f172a;
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --accent: #1e293b;
-    --accent-foreground: #f8fafc;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: #1e293b;
-    --input: #1e293b;
-    --ring: #cbd5e1;
-  }
+  --radius: var(--radius);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply antialiased;
+  
+  /* Pencil Cursor */
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 19l7-7 3 3-7 7-3-3z'></path><path d='M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'></path><path d='M2 2l5 5'></path><path d='M9.5 9.5l4 4'></path></svg>") 0 24, auto;
+  
+  /* Grid Paper Background Pattern */
+  background-image: 
+    linear-gradient(#e2e8f0 1px, transparent 1px),
+    linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-attachment: fixed;
+}
+
+@layer utilities {
+  .highlight-emerald {
+    @apply relative inline-block px-1;
+  }
+  .highlight-emerald::after {
+    content: '';
+    @apply absolute bottom-1 left-0 w-full h-[30%] bg-emerald-100 -z-10 rotate-1 rounded-sm;
+  }
+  
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(3deg); }
+  }
+
+  .paper-shadow {
+    box-shadow: 
+      2px 2px 0px 0px rgba(0,0,0,0.05),
+      4px 4px 0px 0px rgba(0,0,0,0.02);
+  }
 }

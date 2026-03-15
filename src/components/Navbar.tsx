@@ -35,14 +35,14 @@ export default function Navbar() {
                 <div className="hidden sm:flex items-center gap-4">
                     <div className="flex items-center gap-2">
                         <Link href="/browse">
-                            <Button variant="ghost" size="icon" className="rounded-full h-10 w-10 text-neutral-900 border border-neutral-200 hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 bg-white shadow-sm flex items-center justify-center">
+                            <Button variant="ghost" size="icon" className="rounded-2xl h-10 w-10 text-neutral-900 border border-neutral-200 hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 bg-white shadow-sm flex items-center justify-center transition-all duration-300">
                                 <Search className="h-5 w-5" strokeWidth={2.5} />
                             </Button>
                         </Link>
 
                         {session && (
                             <Link href="/add-item">
-                                <Button variant="ghost" size="icon" title="Share Item" className="rounded-full h-10 w-10 text-emerald-700 border border-emerald-200 hover:border-emerald-500 hover:text-emerald-800 hover:bg-emerald-100 bg-emerald-50 shadow-sm flex items-center justify-center">
+                                <Button variant="ghost" size="icon" title="Share Item" className="rounded-2xl h-10 w-10 text-emerald-700 border border-emerald-200 hover:border-emerald-500 hover:text-emerald-800 hover:bg-emerald-100 bg-emerald-50 shadow-sm flex items-center justify-center transition-all duration-300">
                                     <Plus className="h-5 w-5" strokeWidth={2.5} />
                                 </Button>
                             </Link>
@@ -54,36 +54,36 @@ export default function Navbar() {
                             <NotificationBell />
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="outline-none">
-                                    <div role="button" className="relative h-9 w-9 rounded-full cursor-pointer ring-2 ring-transparent hover:ring-emerald-500 transition-all shadow-sm">
-                                        <Avatar className="h-9 w-9 border border-neutral-200">
-                                            <AvatarImage src={session.user?.image || ""} alt={session.user?.name || "User"} />
-                                            <AvatarFallback className="bg-emerald-100 text-emerald-800 font-medium">
+                                    <div role="button" className="relative h-10 w-10 rounded-2xl cursor-pointer ring-2 ring-transparent hover:ring-emerald-500 transition-all shadow-sm overflow-hidden">
+                                        <Avatar className="h-10 w-10 border border-neutral-200 rounded-2xl">
+                                            <AvatarImage src={session.user?.image || ""} alt={session.user?.name || "User"} className="rounded-2xl" />
+                                            <AvatarFallback className="bg-emerald-100 text-emerald-800 font-bold rounded-2xl">
                                                 {session.user?.name?.charAt(0) || "U"}
                                             </AvatarFallback>
                                         </Avatar>
                                     </div>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56" align="end" sideOffset={4}>
+                                <DropdownMenuContent className="w-56 rounded-2xl p-2" align="end" sideOffset={8}>
                                     <DropdownMenuGroup>
                                         <DropdownMenuLabel className="font-normal">
                                             <div className="flex flex-col space-y-1">
-                                                <p className="text-sm font-medium leading-none">{session.user?.name}</p>
+                                                <p className="text-sm font-bold leading-none">{session.user?.name}</p>
                                                 <p className="text-xs leading-none text-muted-foreground">{session.user?.email}</p>
                                             </div>
                                         </DropdownMenuLabel>
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
-                                    <Link href="/dashboard"><DropdownMenuItem>Dashboard</DropdownMenuItem></Link>
-                                    <Link href="/requests"><DropdownMenuItem>My Requests</DropdownMenuItem></Link>
+                                    <Link href="/dashboard"><DropdownMenuItem className="rounded-xl">Dashboard</DropdownMenuItem></Link>
+                                    <Link href="/requests"><DropdownMenuItem className="rounded-xl">My Requests</DropdownMenuItem></Link>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => signOut()}>Log out</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => signOut()} className="rounded-xl text-rose-600 focus:text-rose-700 focus:bg-rose-50">Log out</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
                             <Link href="/auth/signin">
-                                <Button variant="default" className="bg-emerald-600 hover:bg-emerald-700">Login / Join</Button>
+                                <Button variant="default" className="bg-emerald-600 hover:bg-emerald-700 rounded-2xl px-6 font-bold shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5">Login / Join</Button>
                             </Link>
                         </div>
                     )}

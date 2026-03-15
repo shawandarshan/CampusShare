@@ -225,12 +225,6 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                 </h1>
                             </div>
 
-                            {item.mode === "Sell" && item.price && (
-                                <div className="bg-emerald-600 text-white px-6 py-3 rounded-2xl shadow-lg shadow-emerald-500/20 flex flex-col items-center justify-center min-w-[140px]">
-                                    <span className="text-xs font-medium uppercase tracking-wider opacity-80 font-student">Final Price</span>
-                                    <span className="text-3xl font-black">₹{item.price}</span>
-                                </div>
-                            )}
                         </div>
                         {(item.mode || item.availability) && (
                             <p className="text-neutral-500 capitalize flex items-center gap-2 font-medium">
@@ -309,34 +303,36 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                 >
                                     {isRequesting ? <Loader2 className="h-5 w-5 animate-spin" /> : "Delete Listing"}
                                 </Button>
-                            </div>
-                        ) : (
-                            <Button
-                                onClick={handleRequest}
-                                className={`w-full h-14 text-lg font-black shadow-xl transition-all hover:-translate-y-1 active:scale-[0.98] rounded-2xl ${
-                                    item.mode === "Sell"
-                                    ? "bg-emerald-700 hover:bg-emerald-800 shadow-emerald-900/20"
-                                    : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20"
-                                }`}
-                                disabled={isRequesting}
-                            >
-                                {isRequesting ? (
-                                    <div className="flex items-center gap-2">
-                                        <Loader2 className="h-6 w-6 animate-spin" />
-                                        <span>Just a sec...</span>
+                            </d                        ) : (
+                            <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+                                {item.mode === "Sell" && (
+                                    <div className="flex-1 bg-emerald-50 border-2 border-emerald-100 rounded-2xl px-6 flex flex-col justify-center items-center sm:items-start group hover:bg-emerald-100/50 transition-colors py-3 sm:py-0">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600/70 mb-0.5">Price</span>
+                                        <span className="text-2xl font-black text-emerald-900 leading-none">₹{item.price || item.itemPrice || "0"}</span>
                                     </div>
-                                ) : (
-                                    item.mode === "Sell"
-                                    ? `Buy Resource for ₹${item.price || item.itemPrice || "0"}`
-                                    : `Request to ${item.mode || "Borrow"}`
                                 )}
-                            </Button>
+                                <Button
+                                    onClick={handleRequest}
+                                    className={`h-14 text-lg font-black shadow-xl transition-all hover:-translate-y-1 active:scale-[0.98] rounded-2xl ${item.mode === "Sell" ? "flex-[1.5]" : "w-full"} ${
+                                        item.mode === "Sell"
+                                        ? "bg-emerald-700 hover:bg-emerald-800 shadow-emerald-900/20"
+                                        : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20"
+                                    }`}
+                                    disabled={isRequesting}
+                                >
+                                    {isRequesting ? (
+                                        <div className="flex items-center gap-2">
+                                            <Loader2 className="h-6 w-6 animate-spin" />
+                                            <span>Processing...</span>
+                                        </div>
+                                    ) : (
+                                        item.mode === "Sell" ? "Buy Resource" : `Request to ${item.mode || "Borrow"}`
+                                    )}
+                                </Button>
+                            </div>
                         )}
-
-                        <Button variant="ghost" className="w-full h-10 text-neutral-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all font-bold">
-                            <Share2 className="mr-2 h-4 w-4" /> Share with Peers
-                        </Button>
                     </div>
+/div>
                 </div>
             </div>
         </div>

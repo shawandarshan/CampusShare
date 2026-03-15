@@ -40,20 +40,27 @@
   --radius: var(--radius);
 }
 
-body {
+/* Global Cursor & Performance Base */
+html, body {
+  /* Simplified Pencil Cursor: Faster rendering by using a smaller, cleaner SVG */
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'></path></svg>") 0 20, auto;
   background: var(--background);
   color: var(--foreground);
   @apply antialiased;
-  
-  /* Pencil Cursor */
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 19l7-7 3 3-7 7-3-3z'></path><path d='M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z'></path><path d='M2 2l5 5'></path><path d='M9.5 9.5l4 4'></path></svg>") 0 24, auto;
-  
-  /* Grid Paper Background Pattern */
+}
+
+body {
+  /* Grid Paper Background Pattern - Optimized with subtle color */
   background-image: 
-    linear-gradient(#e2e8f0 1px, transparent 1px),
-    linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+    linear-gradient(#f1f5f9 1px, transparent 1px),
+    linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
   background-size: 40px 40px;
   background-attachment: fixed;
+}
+
+/* Ensure interactive elements feel responsive */
+a, button, [role="button"] {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'></path><path d='M15 5l4 4'></path></svg>") 0 20, pointer;
 }
 
 @layer utilities {
@@ -73,13 +80,15 @@ body {
     box-shadow: 0 0 20px -5px rgba(6, 182, 212, 0.4), 0 0 8px -2px rgba(6, 182, 212, 0.2);
   }
 
+  /* GPU Optimized Animations */
   .floating {
-    animation: float 6s ease-in-out infinite;
+    animation: float 8s ease-in-out infinite;
+    will-change: transform;
   }
 
   @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-15px) rotate(3deg); }
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    50% { transform: translate3d(0, -15px, 0) rotate(3deg); }
   }
 
   .paper-shadow {

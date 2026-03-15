@@ -32,17 +32,17 @@ export default function Home() {
           <Sprout className="absolute top-[60%] left-[5%] text-emerald-50 w-10 h-10 floating opacity-60 [animation-delay:-4s]" />
         </div>
 
-        {/* Abstract background blobs */}
-        <div className="absolute top-0 -z-10 h-full w-full">
-          <div className="absolute bottom-auto left-auto right-0 top-0 h-[600px] w-[600px] -translate-x-[20%] translate-y-[10%] rounded-full bg-emerald-50 opacity-40 blur-[100px]"></div>
-          <div className="absolute bottom-auto left-0 right-auto top-0 h-[600px] w-[600px] translate-x-[10%] translate-y-[20%] rounded-full bg-cyan-50 opacity-40 blur-[100px]"></div>
+        {/* Abstract background blobs - Optimized with pointer-events-none */}
+        <div className="absolute top-0 -z-10 h-full w-full pointer-events-none">
+          <div className="absolute bottom-auto left-auto right-0 top-0 h-[600px] w-[600px] -translate-x-[20%] translate-y-[10%] rounded-full bg-emerald-50 opacity-40 blur-[100px] will-change-[transform,opacity]"></div>
+          <div className="absolute bottom-auto left-0 right-auto top-0 h-[600px] w-[600px] translate-x-[10%] translate-y-[20%] rounded-full bg-cyan-50 opacity-40 blur-[100px] will-change-[transform,opacity]"></div>
         </div>
 
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative z-10"
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="relative z-10 will-change-transform"
         >
           <div className="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-wider text-emerald-700 uppercase bg-emerald-100/50 rounded-full border border-emerald-200/50 backdrop-blur-sm shadow-sm">
             ✨ Exclusive for MCE Students

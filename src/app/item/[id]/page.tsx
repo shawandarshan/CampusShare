@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, ArrowLeft, Share2, Package, User, Tag, Wrench } from "lucide-react";
+import { Loader2, ArrowLeft, Share2, Package, User, Tag, Wrench, Clock } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 
@@ -38,74 +38,67 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
         };
         fetchItem();
     }, [id]);
-
     const handleRequest = async () => {
         if (!session) {
             router.push("/auth/signin");
             return;
         }
 
-        setIsRequesting(true);
+        const ownerName = item.ownerId?.name || "the owner";
+        const mode = item.mode || "borrow";
+        
+        // Preference: Item-specific contact phone > Owner profile contact > Empty
+        let phone = item.contact?.phone || item.ownerId?.contact || "";
+
+        if (!phone) {
+            toast({
+                title: "Contact Missing",
+                description: "This owner hasn't provided a phone number for contact.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        // Format phone for WhatsApp (ensure 91 prefix for India if not present)
+        let formattedPhone = phone.replace(/\D/g, '');
+        if (formattedPhone.length === 10) {
+            formattedPhone = `91${formattedPhone}`;
+        } else if (!formattedPhone.startsWith('91') && formattedPhone.length > 0) {
+            // Optional: You could still prepend 91 if it's less than 10 but we'll stick to 10-digit logic for now
+        }
+
+        const message = `
+Hi ${ownerName}, I'm interested in your resource on CampusShare:
+
+Item: ${item.name}
+Mode: ${mode}
+${item.mode === "Sell" ? `Price: ₹${item.price}` : ""}
+
+Image: ${item.images?.[0] || ""}
+
+Is it still available?
+`.trim();
+
+        const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+        window.open(url, "_blank");
+
+        // Optional: Still log the request internally if needed
         try {
-            const ownerName = item.ownerId?.name || "the owner";
-            const mode = item.mode || "borrow";
-
-            // Fetch the current user's saved profile to attach to the request
-            let requesterProfile = { college: "", department: "", year: "", contact: "" };
-            try {
-                const profileRes = await fetch("/api/user/profile");
-                if (profileRes.ok) {
-                    const profileData = await profileRes.json();
-                    requesterProfile = {
-                        college: profileData.user?.college || "Meenakshi College of Engineering",
-                        department: profileData.user?.department || "",
-                        year: profileData.user?.year || "",
-                        contact: profileData.user?.contact || "",
-                    };
-                }
-            } catch { }
-
-            const res = await fetch("/api/requests", {
+            await fetch("/api/requests", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     itemId: item._id || item.id,
                     itemName: item.name || "",
                     ownerId: item.ownerId?._id || item.ownerId?.email || "unknown",
-                    ownerEmail: item.ownerId?._id?.includes("@")
-                        ? item.ownerId._id
-                        : item.ownerId?.email || "",
-                    message: `Hi ${ownerName}, I would like to ${mode.toLowerCase()} this listing. Is it still available?`,
-                    // Profile data auto-attached from saved profile
-                    requesterCollege: requesterProfile.college,
-                    requesterDept: requesterProfile.department,
-                    requesterYear: requesterProfile.year,
-                    requesterPhone: requesterProfile.contact,
-                    // New: Include price and mode for notifications
+                    ownerEmail: item.ownerId?._id?.includes("@") ? item.ownerId._id : item.ownerId?.email || "",
+                    message: message,
                     itemPrice: item.price || "",
                     itemMode: item.mode || "Borrow",
                 }),
             });
-
-            if (!res.ok) {
-                const error = await res.json();
-                throw new Error(error.error || "Failed to submit request");
-            }
-
-            toast({
-                title: "Request Sent!",
-                description: `Your ${mode.toLowerCase()} request has been sent to ${ownerName}.`,
-            });
-
-            router.push("/requests");
-        } catch (error: any) {
-            toast({
-                title: "Error",
-                description: error.message || "Something went wrong.",
-                variant: "destructive",
-            });
-        } finally {
-            setIsRequesting(false);
+        } catch (err) {
+            console.error("Failed to log internal request:", err);
         }
     };
 
@@ -216,9 +209,6 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                     <Badge variant="outline" className="bg-neutral-50 text-neutral-600 border-neutral-100 px-3 py-0.5 rounded-full font-medium">
                                         {item.condition || "Good"} Condition
                                     </Badge>
-                                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100 px-3 py-0.5 rounded-full font-medium">
-                                        {item.mode || "Borrow"}
-                                    </Badge>
                                 </div>
                                 <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-neutral-900 leading-tight">
                                     {item.name || "Resource Item"}
@@ -226,15 +216,15 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                             </div>
 
                         </div>
-                        {(item.mode || item.availability) && (
+                        {item.mode === "Sell" && (
+                            <p className="text-emerald-700 font-bold text-lg mb-1 animate-in fade-in slide-in-from-left-2 duration-300">
+                                Price: ₹{item.price || item.itemPrice || "0"}
+                            </p>
+                        )}
+                        {item.availability && (
                             <p className="text-neutral-500 capitalize flex items-center gap-2 font-medium">
-                                {item.mode && `${item.mode}`}
-                                {item.availability && (
-                                    <>
-                                        <span className="h-1.5 w-1.5 rounded-full bg-neutral-300" />
-                                        Available for {item.availability}
-                                    </>
-                                )}
+                                <Clock className="h-4 w-4 text-emerald-600" />
+                                Available for {item.availability}
                             </p>
                         )}
                     </div>
@@ -277,6 +267,22 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                                 {item.ownerId?.department && `${item.ownerId.department}`}
                                                 {item.ownerId?.department && item.ownerId?.year && <span className="h-1 w-1 rounded-full bg-neutral-300" />}
                                                 {item.ownerId?.year && `Year ${item.ownerId.year}`}
+                                            </p>
+                                        )}
+                                        {item.contact || item.ownerId?.contact ? (
+                                            <div className="mt-2 space-y-1">
+                                                <p className="text-xs text-neutral-500 flex items-center gap-1.5">
+                                                    <span className="font-bold uppercase tracking-tighter text-[10px] bg-neutral-100 px-1 rounded">Phone</span>
+                                                    {item.contact?.phone || item.ownerId?.contact}
+                                                </p>
+                                                <p className="text-xs text-neutral-500 flex items-center gap-1.5">
+                                                    <span className="font-bold uppercase tracking-tighter text-[10px] bg-neutral-100 px-1 rounded">Email</span>
+                                                    {item.contact?.email || item.ownerId?.email}
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <p className="mt-2 text-[10px] text-rose-500 font-bold italic">
+                                                This owner hasn't provided a phone number for contact.
                                             </p>
                                         )}
                                     </div>
@@ -327,7 +333,9 @@ export default function ItemDetailsPage({ params }: { params: Promise<{ id: stri
                                             <span>Processing...</span>
                                         </div>
                                     ) : (
-                                        item.mode === "Sell" ? "Buy Resource" : `Request to ${item.mode || "Borrow"}`
+                                        item.mode === "Sell" ? "Buy Resource" : 
+                                        item.mode === "Donate" ? "Request This Item" :
+                                        `Request to ${item.mode || "Borrow"}`
                                     )}
                                 </Button>
                             </div>

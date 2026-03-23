@@ -9,8 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, X, Trash2, IndianRupee } from "lucide-react";
+import { Upload, X, Trash2, IndianRupee, Loader2, DollarSign, Heart, Clock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 export default function AddItemPage() {
     const { data: session, status } = useSession();
@@ -27,14 +28,24 @@ export default function AddItemPage() {
         availability: "",
         mode: "",
         price: "",
+        phone: "",
     });
 
     const [images, setImages] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
 
-    if (status === "unauthenticated") {
-        if (typeof window !== "undefined") router.push("/auth/signin");
-        return null;
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/auth/signin");
+        }
+    }, [status, router]);
+
+    if (status === "loading" || status === "unauthenticated") {
+        return (
+            <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
+            </div>
+        );
     }
 
     const handleFiles = (files: FileList | File[]) => {
@@ -106,6 +117,11 @@ export default function AddItemPage() {
             const requestBody = {
                 ...formData,
                 images: uploadedImageUrls,
+                contact: {
+                    name: session?.user?.name || "Anonymous",
+                    email: session?.user?.email || "",
+                    phone: formData.phone,
+                },
                 ownerId: session?.user ? {
                     _id: session.user.email,
                     name: session.user.name,
@@ -212,23 +228,61 @@ export default function AddItemPage() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="mode" className="text-neutral-900 font-medium">Sharing Mode</Label>
-                                <Select required onValueChange={(val: string | null) => setFormData((prev) => ({ ...prev, mode: val || "" }))}>
-                                    <SelectTrigger className="text-neutral-900 bg-white border-emerald-200">
-                                        <SelectValue placeholder="Select Mode" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Borrow">Borrow</SelectItem>
-                                        <SelectItem value="Sell">Sell (Direct Sale)</SelectItem>
-                                        <SelectItem value="Donate">Donate</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                        <div className="space-y-2">
+                            <Label htmlFor="phone" className="text-neutral-900 font-medium">Your Phone Number (WhatsApp)</Label>
+                            <div className="relative">
+                                <Input
+                                    id="phone"
+                                    required
+                                    type="tel"
+                                    className="text-neutral-900 bg-white border-emerald-200 pl-10"
+                                    placeholder="e.g. 919876543210"
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                />
+                                <Phone className="absolute left-3 top-3 h-4 w-4 text-emerald-600" />
                             </div>
+                        </div>
 
+                        <div className="space-y-4">
+                            <Label className="text-neutral-900 font-medium">Sharing Mode</Label>
+                            <div className="grid grid-cols-3 gap-3">
+                                {[
+                                    { id: "Borrow", label: "Borrow", icon: Clock, color: "blue" },
+                                    { id: "Sell", label: "Sell", icon: DollarSign, color: "emerald" },
+                                    { id: "Donate", label: "Donate", icon: Heart, color: "rose" }
+                                ].map((option) => {
+                                    const Icon = option.icon;
+                                    const isActive = formData.mode === option.id;
+                                    const colorClass = 
+                                        option.color === "emerald" ? (isActive ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-emerald-600 border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50") :
+                                        option.color === "blue" ? (isActive ? "bg-blue-600 text-white border-blue-600" : "bg-white text-blue-600 border-blue-100 hover:border-blue-300 hover:bg-blue-50") :
+                                        (isActive ? "bg-rose-600 text-white border-rose-600" : "bg-white text-rose-600 border-rose-100 hover:border-rose-300 hover:bg-rose-50");
+
+                                    return (
+                                        <button
+                                            key={option.id}
+                                            type="button"
+                                            onClick={() => setFormData((prev) => ({ 
+                                                ...prev, 
+                                                mode: option.id,
+                                                // Clear stale fields
+                                                price: option.id === "Sell" ? prev.price : "",
+                                                availability: option.id === "Sell" ? "" : (prev.availability || "available now")
+                                            }))}
+                                            className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all duration-200 group gap-2 ${colorClass} ${isActive ? "shadow-md scale-[1.02]" : "shadow-sm"}`}
+                                        >
+                                            <Icon className={`h-6 w-6 ${isActive ? "text-white" : ""}`} />
+                                            <span className="text-sm font-bold">{option.label}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4">
                             {formData.mode === "Sell" ? (
-                                <div className="space-y-2">
+                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
                                     <Label htmlFor="price" className="text-emerald-700 font-semibold flex items-center gap-1">
                                         Price (₹)
                                     </Label>
@@ -237,22 +291,24 @@ export default function AddItemPage() {
                                             id="price"
                                             type="number"
                                             required={formData.mode === "Sell"}
-                                            className="text-neutral-900 bg-white border-emerald-300 pl-8"
+                                            className="text-neutral-900 bg-white border-emerald-300 pl-8 h-11"
                                             placeholder="Set your price"
                                             value={formData.price}
                                             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                                         />
-                                        <IndianRupee className="absolute left-2.5 top-2.5 h-4 w-4 text-emerald-600" />
+                                        <IndianRupee className="absolute left-2.5 top-3 h-4 w-4 text-emerald-600" />
                                     </div>
                                 </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    <Label htmlFor="availability" className="text-neutral-900 font-medium">Availability</Label>
+                            ) : formData.mode && (
+                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <Label htmlFor="availability" className="text-neutral-900 font-medium">
+                                        {formData.mode === "Donate" ? "Donation Availability" : "Availability / Duration"}
+                                    </Label>
                                     <Input
                                         id="availability"
-                                        required={formData.mode !== "Sell"}
-                                        className="text-neutral-900 bg-white placeholder:text-neutral-400"
-                                        placeholder="e.g. 7 days, permanent"
+                                        required={formData.mode === "Borrow"}
+                                        className="text-neutral-900 bg-white placeholder:text-neutral-400 h-11"
+                                        placeholder={formData.mode === "Donate" ? "e.g. Always available, until Sunday" : "e.g. 7 days, permanent"}
                                         value={formData.availability}
                                         onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
                                     />
@@ -326,8 +382,8 @@ export default function AddItemPage() {
 
                         <Button 
                             type="submit" 
-                            className="w-full h-12 text-base font-semibold bg-emerald-600 hover:bg-emerald-700 shadow-md transition-all hover:-translate-y-0.5" 
-                            disabled={isLoading || (formData.mode === "Sell" && !formData.price)}
+                            className="w-full h-12 text-base font-bold bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5" 
+                            disabled={isLoading || !formData.mode || (formData.mode === "Sell" && !formData.price)}
                         >
                             {isLoading ? (
                                 <div className="flex items-center gap-2">

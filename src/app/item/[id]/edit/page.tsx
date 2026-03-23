@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, X, Trash2, IndianRupee, ArrowLeft, Loader2 } from "lucide-react";
+import { Upload, X, Trash2, IndianRupee, ArrowLeft, Loader2, DollarSign, Heart, Clock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 
@@ -30,6 +30,7 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
         availability: "",
         mode: "",
         price: "",
+        phone: "",
     });
 
     const [images, setImages] = useState<File[]>([]);
@@ -66,6 +67,7 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
                     availability: item.availability || "",
                     mode: item.mode || "Borrow",
                     price: item.price || "",
+                    phone: item.contact?.phone || "",
                 });
                 setExistingImages(item.images || []);
             } catch (error) {
@@ -129,6 +131,11 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     ...formData,
+                    contact: {
+                        name: session?.user?.name || "Anonymous",
+                        email: session?.user?.email || "",
+                        phone: formData.phone,
+                    },
                     images: finalImages,
                 }),
             });
@@ -223,38 +230,82 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-4">
+                            <Label className="text-neutral-900 font-bold ml-1">Sharing Mode</Label>
+                            <div className="grid grid-cols-3 gap-3">
+                                {[
+                                    { id: "Borrow", label: "Borrow", icon: Clock, color: "blue" },
+                                    { id: "Sell", label: "Sell", icon: DollarSign, color: "emerald" },
+                                    { id: "Donate", label: "Donate", icon: Heart, color: "rose" }
+                                ].map((option) => {
+                                    const Icon = option.icon;
+                                    const isActive = formData.mode === option.id;
+                                    const colorClass = 
+                                        option.color === "emerald" ? (isActive ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-emerald-600 border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50") :
+                                        option.color === "blue" ? (isActive ? "bg-blue-600 text-white border-blue-600" : "bg-white text-blue-600 border-blue-100 hover:border-blue-300 hover:bg-blue-50") :
+                                        (isActive ? "bg-rose-600 text-white border-rose-600" : "bg-white text-rose-600 border-rose-100 hover:border-rose-300 hover:bg-rose-50");
+
+                                    return (
+                                        <button
+                                            key={option.id}
+                                            type="button"
+                                            onClick={() => setFormData((prev) => ({ 
+                                                ...prev, 
+                                                mode: option.id,
+                                                price: option.id === "Sell" ? prev.price : "",
+                                                availability: option.id === "Sell" ? "" : (prev.availability || "available now")
+                                            }))}
+                                            className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all duration-200 group gap-2 ${colorClass} ${isActive ? "shadow-md scale-[1.02]" : "shadow-sm"}`}
+                                        >
+                                            <Icon className={`h-6 w-6 ${isActive ? "text-white" : ""}`} />
+                                            <span className="text-sm font-bold">{option.label}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4">
                             <div className="space-y-2">
-                                <Label className="text-neutral-900 font-bold ml-1">Sharing Mode</Label>
-                                <Select value={formData.mode} onValueChange={(val: string | null) => setFormData((prev) => ({ ...prev, mode: val || "" }))}>
-                                    <SelectTrigger className="h-12 border-emerald-100 rounded-xl bg-emerald-50/20">
-                                        <SelectValue placeholder="Mode" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Borrow">Borrow</SelectItem>
-                                        <SelectItem value="Sell">Sell</SelectItem>
-                                        <SelectItem value="Donate">Donate</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <Label htmlFor="phone" className="text-neutral-900 font-bold ml-1">Your Phone Number (WhatsApp)</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="phone"
+                                        required
+                                        type="tel"
+                                        className="h-12 border-emerald-200 rounded-xl font-bold pl-10"
+                                        placeholder="e.g. 919876543210"
+                                        value={formData.phone}
+                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                    />
+                                    <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-emerald-600" />
+                                </div>
                             </div>
                             {formData.mode === "Sell" ? (
-                                <div className="space-y-2">
-                                    <Label className="text-emerald-700 font-bold ml-1">Price (₹)</Label>
+                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <Label className="text-emerald-700 font-bold ml-1 flex items-center gap-1">
+                                        Price (₹)
+                                    </Label>
                                     <div className="relative">
                                         <IndianRupee className="absolute left-3.5 top-3.5 h-4 w-4 text-emerald-600" />
                                         <Input
                                             type="number"
+                                            required={formData.mode === "Sell"}
                                             className="h-12 pl-10 border-emerald-200 rounded-xl font-bold"
                                             value={formData.price}
                                             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                                         />
                                     </div>
                                 </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    <Label className="text-neutral-900 font-bold ml-1">Availability</Label>
+                            ) : formData.mode && (
+                                <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <Label className="text-neutral-900 font-bold ml-1">
+                                        {formData.mode === "Donate" ? "Donation Availability" : "Availability / Duration"}
+                                    </Label>
                                     <Input
+                                        required={formData.mode === "Borrow"}
                                         className="h-12 border-neutral-200 rounded-xl"
+                                        placeholder={formData.mode === "Donate" ? "e.g. Always available, until Sunday" : "e.g. 7 days, permanent"}
                                         value={formData.availability}
                                         onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
                                     />
@@ -301,7 +352,7 @@ export default function EditItemPage({ params }: { params: Promise<{ id: string 
                         <Button 
                             type="submit" 
                             className="w-full h-14 text-lg font-black bg-emerald-600 hover:bg-emerald-700 shadow-xl shadow-emerald-500/20 rounded-2xl transition-all hover:-translate-y-1"
-                            disabled={isLoading}
+                            disabled={isLoading || !formData.mode || (formData.mode === "Sell" && !formData.price)}
                         >
                             {isLoading ? (
                                 <div className="flex items-center gap-3">

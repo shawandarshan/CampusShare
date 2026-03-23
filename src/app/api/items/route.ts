@@ -53,7 +53,8 @@ export async function GET(req: Request) {
         if (querySearch) {
             const lower = querySearch.toLowerCase();
             filteredItems = items.filter((item: any) =>
-                item.name?.toLowerCase().includes(lower)
+                item.name?.toLowerCase().includes(lower) ||
+                item.mode?.toLowerCase().includes(lower)
             );
         }
 
@@ -72,6 +73,7 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
+        const { contact } = body;
 
         const newItem = {
             name: body.name || "",
@@ -83,6 +85,7 @@ export async function POST(req: Request) {
             price: body.price || "",
             images: body.images || [],
             imageUrl: body.images?.[0] || "",
+            contact: contact || null,
             ownerId: (session.user as any).id || session.user.email, // Force ownerId from the authenticated session
             available: true,
             createdAt: new Date().toISOString(),

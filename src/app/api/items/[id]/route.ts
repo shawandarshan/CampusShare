@@ -132,7 +132,7 @@ export async function PATCH(
         }
 
         const body = await req.json();
-        const allowedFields = ["name", "category", "condition", "description", "availability", "mode", "price", "images"];
+        const allowedFields = ["name", "category", "condition", "description", "availability", "mode", "price", "images", "contact"];
         const updateData: any = {};
         
         allowedFields.forEach(field => {

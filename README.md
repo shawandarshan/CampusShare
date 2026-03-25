@@ -38,29 +38,6 @@ CampusShare provides a centralized, modern, and efficient hub for college resour
 - Node.js (v20 or higher)
 - npm or yarn
 
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/CampusShare.git
-   cd CampusShare
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Set up environment variables:
-   Create a `.env.local` file in the root directory and add your Firebase and Supabase credentials.
-
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

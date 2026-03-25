@@ -16,7 +16,7 @@ export const authOptions: AuthOptions = {
                     throw new Error("Missing email from Google");
                 }
 
-                const isAllowedGmail = credentials.email === "shawandarshan6002@gmail.com";
+                const isAllowedGmail = credentials.email === (process.env.ADMIN_EMAIL || "shawandarshan6002@gmail.com");
                 if (!credentials.email.endsWith("@mce.edu.in") && !isAllowedGmail) {
                     throw new Error("Only @mce.edu.in accounts are allowed.");
                 }

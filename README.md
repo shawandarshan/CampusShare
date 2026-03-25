@@ -1,37 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CampusShare 🎓
 
-## Getting Started
+**CampusShare** is a decentralized resource-sharing platform designed specifically for college campuses. It aims to solve the inefficiency of existing sharing systems by providing a streamlined, peer-to-peer marketplace for students to share, lend, or sell resources like textbooks, electronics, and lab equipment.
 
-First, run the development server:
+## 🚀 The Problem & Our Solution
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### The Problem
+Most college campuses either lack a formal resource-sharing system or rely on outdated, fragmented methods like WhatsApp groups, physical bulletin boards, or general-purpose marketplaces. These methods are often:
+- **Inefficient:** Hard to search for specific items.
+- **Unreliable:** No standard way to verify listings or users.
+- **Fragmented:** Information is scattered across multiple platforms.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### The Solution: CampusShare
+CampusShare provides a centralized, modern, and efficient hub for college resources. By leveraging a campus-specific focus, it ensures that transactions are convenient (conducted within the same campus) and secure (verified college students).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Peer-to-Peer Marketplace:** Easily list and find resources within your campus.
+- **Categorized Listings:** Items are organized by category (Textbooks, Electronics, Lab Gear, etc.).
+- **Item Management:** Create, edit, and delete your listings with ease.
+- **Real-time Search:** Quickly find exactly what you need.
+- **User Authentication:** Secure login for students.
+- **Mobile Responsive:** A premium, fluid design that works perfectly on all devices.
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Database & Auth:** [Firebase](https://firebase.google.com/) & [Supabase](https://supabase.com/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **Icons:** [Lucide React](https://lucide.dev/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Prerequisites
 
-## Deploy on Vercel
+- Node.js (v20 or higher)
+- npm or yarn
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Installation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# CampusShare
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/CampusShare.git
+   cd CampusShare
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   Create a `.env.local` file in the root directory and add your Firebase and Supabase credentials.
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
